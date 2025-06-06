@@ -1,0 +1,710 @@
+[
+    {
+        "id": "db1a820d5238bd1a",
+        "type": "tab",
+        "label": "Huerto Urbano Inteligente",
+        "disabled": false,
+        "info": "Dashboard principal del proyecto de huerto urbano inteligente"
+    },
+    {
+        "id": "3818de57d4a79f45",
+        "type": "inject",
+        "z": "db1a820d5238bd1a",
+        "name": "Disparador de Consulta OpenWeather",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "300",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "fetch_weather",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 100,
+        "wires": [
+            [
+                "af193a01c6f6129d"
+            ]
+        ]
+    },
+    {
+        "id": "af193a01c6f6129d",
+        "type": "http request",
+        "z": "db1a820d5238bd1a",
+        "name": "Obtener Datos OpenWeather",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://api.openweathermap.org/data/2.5/weather?lat=-3.25757&lon=-79.96195&units=metric&appid=8bef6e87ce4a3cf48837b829fcbd2465&lang=es",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 620,
+        "y": 120,
+        "wires": [
+            [
+                "501bbac507141bb2"
+            ]
+        ]
+    },
+    {
+        "id": "363a10b98b73271e",
+        "type": "inject",
+        "z": "db1a820d5238bd1a",
+        "name": "Disparador de Evaluación de Riego",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "300",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 5,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 270,
+        "y": 320,
+        "wires": [
+            [
+                "cb1e935c16fb2198"
+            ]
+        ]
+    },
+    {
+        "id": "8ac7e64d92231db2",
+        "type": "inject",
+        "z": "db1a820d5238bd1a",
+        "name": "Disparador de Simulación pH",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "15",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 2,
+        "topic": "simulate_ph",
+        "payload": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 180,
+        "wires": [
+            [
+                "4feb035bcddafaa9"
+            ]
+        ]
+    },
+    {
+        "id": "65775cbab450ab3e",
+        "type": "ui_template",
+        "z": "db1a820d5238bd1a",
+        "group": "0c3796f3dbf31d60",
+        "name": "Dashboard Principal (UI)",
+        "order": 1,
+        "width": 22,
+        "height": 23,
+        "format": "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap\" rel=\"stylesheet\">\n<link href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css\" rel=\"stylesheet\">\n<link href=\"https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap\" rel=\"stylesheet\">\n\n<style>\n  body,\n  .nr-dashboard-template {\n    font-family: 'Poppins', sans-serif;\n    background: radial-gradient(circle at top left, #d0f4de, #fefae0);\n    color: #102a43;\n    margin: 0;\n    padding: 0;\n  }\n\n  .section {\n    background: #ffffff;\n    border-radius: 18px;\n    padding: 24px;\n    margin-bottom: 30px;\n    box-shadow: 0 4px 20px rgba(16, 42, 67, 0.08);\n    border-left: 6px solid #2a9d8f;\n    animation: fadeSlide 0.6s ease forwards;\n    opacity: 0;\n    transform: translateY(20px);\n  }\n\n  .section:nth-child(1) {\n    animation-delay: 0.1s;\n  }\n\n  .section:nth-child(2) {\n    animation-delay: 0.2s;\n  }\n\n  .section:nth-child(3) {\n    animation-delay: 0.3s;\n  }\n\n  .section:nth-child(4) {\n    animation-delay: 0.4s;\n  }\n\n  .section:nth-child(5) {\n    animation-delay: 0.5s;\n  }\n\n  @keyframes fadeSlide {\n    to {\n      opacity: 1;\n      transform: none;\n    }\n  }\n\n  h2 {\n    font-weight: 700;\n    color: #2a9d8f;\n    margin-top: 0;\n    margin-bottom: 18px;\n    font-size: 1.6em;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n  }\n\n  .sensor-data {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n    gap: 20px;\n  }\n\n  .sensor-item {\n    background: linear-gradient(145deg, #ecfdf5, #e6fffb);\n    border-radius: 14px;\n    padding: 20px 12px 14px 12px;\n    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.05);\n    text-align: center;\n    color: #102a43;\n    font-weight: 600;\n    position: relative;\n    transition: transform 0.3s ease, box-shadow 0.3s ease;\n  }\n\n  .sensor-item:hover {\n    transform: scale(1.03);\n    box-shadow: 0 6px 20px rgba(42, 157, 143, 0.15);\n  }\n\n  .sensor-icon {\n    font-size: 2.5em;\n    color: #219ebc;\n    margin-bottom: 8px;\n    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));\n  }\n\n  .sensor-label {\n    font-size: 0.9em;\n    color: #555;\n    margin-top: 6px;\n    font-weight: 400;\n  }\n\n  button.control-button-on,\n  button.control-button-off {\n    padding: 10px 16px;\n    font-weight: 600;\n    font-size: 1em;\n    border: none;\n    border-radius: 6px;\n    cursor: pointer;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);\n    transition: all 0.3s ease;\n  }\n\n  button.control-button-on {\n    background: linear-gradient(to right, #43cea2, #185a9d);\n    color: white;\n  }\n\n  button.control-button-off {\n    background: linear-gradient(to right, #ef476f, #ff6f61);\n    color: white;\n  }\n\n  button.control-button-on:hover {\n    filter: brightness(1.1);\n  }\n\n  button.control-button-off:hover {\n    filter: brightness(1.1);\n  }\n\n  /* Estilos del iframe#camera removidos de aquí, se mueven a .iframe-container */\n  /* iframe#camera {\n    width: 100%;\n    height: 300px;\n    border: 3px solid #2a9d8f;\n    border-radius: 12px;\n    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);\n  } */\n\n  /* Input de la URL de la cámara */\n  #cam-ip {\n    width: 100%;\n    padding: 10px;\n    border-radius: 8px;\n    border: 1.5px solid #ccc;\n    margin-bottom: 10px;\n    font-size: 1em;\n    background: #f9f9f9;\n    color: #000;\n    /* Texto negro para asegurar visibilidad */\n  }\n\n  #calendar-cultivos,\n  .summary-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 1em;\n    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);\n    overflow: hidden;\n    border-radius: 10px;\n    color: #102a43;\n  }\n\n  #calendar-cultivos th,\n  .summary-table th {\n    background: #2a9d8f;\n    color: #ffffff;\n    padding: 12px;\n  }\n\n  #calendar-cultivos td,\n  .summary-table td {\n    padding: 10px;\n    background: #f4f9f9;\n    text-align: center;\n    color: #102a43;\n  }\n\n  .summary-table tr:nth-child(even) td {\n    background: #e0f2f1;\n  }\n\n  #export-btn {\n    background: #219ebc;\n    color: white;\n    border: none;\n    padding: 10px 18px;\n    border-radius: 6px;\n    font-weight: 600;\n    font-size: 1em;\n    cursor: pointer;\n    margin-bottom: 10px;\n    transition: background 0.2s ease;\n  }\n\n  #export-btn:hover {\n    background: #186d8e;\n  }\n\n  /* pH destacado */\n  #ph,\n  .summary-table td:nth-child(4) {\n    font-size: 1.1em;\n    font-weight: bold;\n    border-radius: 6px;\n    padding: 2px 8px;\n    transition: background 0.2s, color 0.2s;\n  }\n\n  .ph-alert-low {\n    color: #e53935 !important;\n    background: #ffebee;\n    border: 1.5px solid #e53935;\n  }\n\n  .ph-alert-high {\n    color: #fb8c00 !important;\n    background: #fff3e0;\n    border: 1.5px solid #fb8c00;\n  }\n\n  .ph-ok {\n    color: #388e3c !important;\n    background: #e8f5e9;\n    border: 1.5px solid #388e3c;\n  }\n\n  /* Contenedor de video para relación de aspecto 16:9 */\n  .iframe-container {\n    position: relative;\n    width: 100%;\n    padding-bottom: 56.25%;\n    /* Esto crea la relación de aspecto 16:9 (9 / 16 = 0.5625) */\n    height: 0;\n    /* Necesario para que padding-bottom defina el alto */\n    overflow: hidden;\n    /* Movidos aquí los estilos de borde y sombra que antes estaban en #camera */\n    border: 3px solid #2a9d8f;\n    border-radius: 12px;\n    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);\n  }\n\n  .iframe-container iframe {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    border: 0;\n    /* El iframe no debe tener borde, lo maneja el contenedor */\n  }\n</style>\n\n<div class=\"section\">\n  <h2><i class=\"fas fa-seedling\"></i>Estado Actual del Huerto</h2>\n  <div class=\"sensor-data\">\n    <div class=\"sensor-item\">\n      <i class=\"fas fa-temperature-high sensor-icon\" title=\"Temperatura\"></i>\n      <div id=\"temp\">-- °C</div>\n      <div class=\"sensor-label\">Temperatura</div>\n    </div>\n    <div class=\"sensor-item\">\n      <i class=\"fas fa-tint sensor-icon\" title=\"Humedad\"></i>\n      <div id=\"hum\">-- %</div>\n      <div class=\"sensor-label\">Humedad</div>\n    </div>\n    <div class=\"sensor-item\">\n      <i class=\"fas fa-cloud sensor-icon\" title=\"Descripción Clima\"></i>\n      <div id=\"desc\">--</div>\n      <div class=\"sensor-label\">Descripción</div>\n    </div>\n    <div class=\"sensor-item\">\n      <i class=\"fas fa-vial sensor-icon\" title=\"pH Suelo\"></i>\n      <div id=\"ph\">--</div>\n      <div class=\"sensor-label\">pH Suelo</div>\n    </div>\n    <div class=\"sensor-item\">\n      <i class=\"fas fa-faucet sensor-icon\" title=\"Estado Riego\"></i>\n      <div id=\"riego_status\">--</div>\n      <div class=\"sensor-label\">Estado Riego</div>\n    </div>\n    <div class=\"sensor-item\">\n      <i class=\"fas fa-umbrella-beach sensor-icon\" title=\"Estado Sombra\"></i>\n      <div id=\"shade_status\">--</div>\n      <div class=\"sensor-label\">Estado Sombra</div>\n    </div>\n    <div class=\"sensor-item\">\n      <i class=\"fas fa-fan sensor-icon\" title=\"Estado Ventilador\"></i>\n      <div id=\"fan_status\">--</div>\n      <div class=\"sensor-label\">Estado Ventilador</div>\n    </div>\n  </div>\n</div>\n\n<div class=\"section\">\n  <h2><i class=\"fas fa-calendar-alt\"></i>Calendario de Cultivos</h2>\n  <table id=\"calendar-cultivos\">\n    <thead>\n      <tr>\n        <th>Mes</th>\n        <th>Actividad</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td>Enero</td>\n        <td>Siembra de tomates y pimientos</td>\n      </tr>\n      <tr>\n        <td>Febrero</td>\n        <td>Riego frecuente y fertilización</td>\n      </tr>\n      <tr>\n        <td>Marzo</td>\n        <td>Control de plagas</td>\n      </tr>\n      <tr>\n        <td>Abril</td>\n        <td>Cosecha de cultivos tempranos</td>\n      </tr>\n      <tr>\n        <td>Mayo</td>\n        <td>Preparación del suelo</td>\n      </tr>\n      <tr>\n        <td>Junio</td>\n        <td>Siembra de lechugas y espinacas</td>\n      </tr>\n      <tr>\n        <td>Julio</td>\n        <td>Riego moderado y poda</td>\n      </tr>\n      <tr>\n        <td>Agosto</td>\n        <td>Fertilización y control de malezas</td>\n      </tr>\n      <tr>\n        <td>Septiembre</td>\n        <td>Preparación para cosecha</td>\n      </tr>\n      <tr>\n        <td>Octubre</td>\n        <td>Cosecha final</td>\n      </tr>\n      <tr>\n        <td>Noviembre</td>\n        <td>Descanso del suelo</td>\n      </tr>\n      <tr>\n        <td>Diciembre</td>\n        <td>Planificación para nuevo ciclo</td>\n      </tr>\n    </tbody>\n  </table>\n</div>\n\n<div class=\"section\">\n  <h2><i class=\"fas fa-video\"></i>Visualización Cámara IP</h2>\n  <input id=\"cam-ip\" type=\"text\" placeholder=\"Ingrese URL/IP de cámara (ej: http://url_stream)\">\n\n  <div class=\"iframe-container\">\n    <iframe id=\"camera\" src=\"\" frameborder=\"0\" allowfullscreen></iframe>\n  </div>\n</div>\n\n<div class=\"section\">\n  <h2><i class=\"fas fa-history\"></i>Historial de Datos (Últimos 30 registros)</h2>\n  <button id=\"export-btn\"><i class=\"fas fa-file-csv\"></i>Exportar historial a CSV</button>\n  <table class=\"summary-table\" id=\"summary-table\">\n    <thead>\n      <tr>\n        <th>Fecha y Hora</th>\n        <th>Temp (°C)</th>\n        <th>Hum (%)</th>\n        <th>pH Suelo</th>\n        <th>Descripción</th>\n        <th>Estado Riego</th>\n        <th>Estado Sombra</th>\n        <th>Estado Ventilador</th>\n      </tr>\n    </thead>\n    <tbody> </tbody>\n  </table>\n</div>\n\n<script>\n  (function(scope) {\n    // Import Tailwind CSS and Inter font dynamically (only once)\n    if (!document.querySelector('script[src*=\\\"tailwindcss.com\\\"]')) {\n      const tailwindScript = document.createElement('script');\n      tailwindScript.src = 'https://cdn.tailwindcss.com';\n      document.head.appendChild(tailwindScript);\n    }\n    if (!document.querySelector('link[href*=\\\"Inter\\\"]')) {\n      const interFontLink = document.createElement('link');\n      interFontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap';\n      interFontLink.rel = 'stylesheet';\n      document.head.appendChild(interFontLink);\n    }\n\n    // Función para enviar comandos MQTT desde los botones de la UI\n    window.sendMqttCommand = function(topic, payload) {\n      scope.send({\n        topic: topic,\n        payload: payload\n      });\n    };\n\n    // Función para actualizar los valores de los sensores en el dashboard\n    function updateSensors(data) {\n      const tempEl = document.getElementById('temp');\n      const humEl = document.getElementById('hum');\n      const descEl = document.getElementById('desc');\n      const phEl = document.getElementById('ph');\n      const riegoEl = document.getElementById('riego_status');\n      const shadeEl = document.getElementById('shade_status');\n      const fanEl = document.getElementById('fan_status');\n\n      if (tempEl && data.temperature !== undefined) tempEl.textContent = (data.temperature === '--' ? '--' : data.temperature + ' °C');\n      if (humEl && data.humidity !== undefined) humEl.textContent = (data.humidity === '--' ? '--' : data.humidity + ' %');\n      if (descEl && data.description !== undefined) descEl.textContent = data.description;\n      if (phEl && data.ph !== undefined) phEl.textContent = (data.ph === '--' || typeof data.ph !== 'number' ? '--' : data.ph.toFixed(2));\n      if (riegoEl && data.riego_status !== undefined) riegoEl.textContent = data.riego_status;\n      if (shadeEl && data.shade_status !== undefined) shadeEl.textContent = data.shade_status;\n      if (fanEl && data.fan_status !== undefined) fanEl.textContent = data.fan_status;\n\n      // Aplicar el resaltado de pH después de actualizar el valor\n      highlightPh();\n    }\n\n    // Actualizar la cámara al ingresar la URL\n    const camIpInput = document.getElementById('cam-ip');\n    const cameraFrame = document.getElementById('camera');\n    if (camIpInput && cameraFrame) {\n      camIpInput.addEventListener('change', function(e) {\n        let url = e.target.value.trim();\n        if (url && !url.startsWith('http://') && !url.startsWith('https://')) {\n          url = 'http://' + url; // Por defecto, usar http si no se especifica protocolo\n        }\n        cameraFrame.src = url;\n      });\n    }\n\n    // Función para exportar el historial a CSV\n    const exportBtn = document.getElementById('export-btn');\n    if (exportBtn) {\n      exportBtn.addEventListener('click', function() {\n        const rows = [];\n        const headers = ['\"Fecha y Hora\"', '\"Temperatura (°C)\"', '\"Humedad (%)\"', '\"pH Suelo\"', '\"Descripción\"', '\"Estado Riego\"', '\"Estado Sombra\"', '\"Estado Ventilador\"'];\n        rows.push(headers.join(','));\n\n        if (scope.historial && scope.historial.length > 0) {\n          scope.historial.forEach(entry => {\n            const fecha = new Date(entry.timestamp).toLocaleString();\n            const fila = [\n              '\\\"' + fecha + '\\\"',\n              entry.temperatura === '--' ? '' : entry.temperatura,\n              entry.humedad === '--' ? '' : entry.humedad,\n              (entry.ph === '--' || typeof entry.ph !== 'number') ? '' : entry.ph.toFixed(2),\n              '\\\"' + (entry.descripcion || '') + '\\\"',\n              entry.riego_status || '',\n              entry.shade_status || '',\n              entry.fan_status || ''\n            ];\n            rows.push(fila.join(','));\n          });\n        }\n\n        const csvContent = rows.join('\\n');\n        const encodedUri = encodeURI('data:text/csv;charset=utf-8,' + csvContent);\n        const link = document.createElement('a');\n        link.setAttribute('href', encodedUri);\n        link.setAttribute('download', 'historial_huerto.csv');\n        document.body.appendChild(link);\n        link.click();\n        document.body.removeChild(link);\n      });\n    }\n\n    // Función para renderizar la tabla de resumen diario\n    function renderSummaryTable() {\n      const tbody = document.querySelector('#summary-table tbody');\n      if (!tbody) return;\n      tbody.innerHTML = ''; // Limpiar la tabla\n\n      if (scope.historial && scope.historial.length > 0) {\n        // Iterar en orden inverso para mostrar el más reciente primero\n        for (let i = scope.historial.length - 1; i >= 0; i--) {\n          const entry = scope.historial[i];\n          const tr = document.createElement('tr');\n          const fecha = new Date(entry.timestamp).toLocaleString();\n          tr.innerHTML = `\n            <td>${fecha}</td>\n            <td>${entry.temperatura === '--' ? '--' : entry.temperatura}</td>\n            <td>${entry.humedad === '--' ? '--' : entry.humedad}</td>\n            <td>${(entry.ph === '--' || typeof entry.ph !== 'number') ? '--' : entry.ph.toFixed(2)}</td>\n            <td>${entry.descripcion || '--'}</td>\n            <td>${entry.riego_status || '--'}</td>\n            <td>${entry.shade_status || '--'}</td>\n            <td>${entry.fan_status || '--'}</td>\n          `;\n          tbody.appendChild(tr);\n        }\n      } else {\n        const tr = document.createElement('tr');\n        tr.innerHTML = '<td colspan=\"8\">No hay datos históricos disponibles</td>';\n        tbody.appendChild(tr);\n      }\n      highlightPhTable();\n    }\n\n    // Observar los mensajes entrantes para actualizar datos\n    scope.$watch('msg', function(msg) {\n      if (msg && msg.payload) {\n        updateSensors(msg.payload);\n\n        if (!scope.historial) scope.historial = [];\n\n        // Solo añadir al historial si hay datos relevantes para registrar\n        if (msg.payload.temperature !== undefined || msg.payload.humidity !== undefined || msg.payload.ph !== undefined || msg.payload.riego_status !== undefined || msg.payload.shade_status !== undefined || msg.payload.fan_status !== undefined) {\n          scope.historial.push({\n            timestamp: Date.now(),\n            temperatura: msg.payload.temperature !== undefined ? msg.payload.temperature : '--',\n            humedad: msg.payload.humidity !== undefined ? msg.payload.humidity : '--',\n            ph: msg.payload.ph !== undefined ? msg.payload.ph : '--',\n            descripcion: msg.payload.description !== undefined ? msg.payload.description : '--',\n            riego_status: msg.payload.riego_status !== undefined ? msg.payload.riego_status : '--',\n            shade_status: msg.payload.shade_status !== undefined ? msg.payload.shade_status : '--',\n            fan_status: msg.payload.fan_status !== undefined ? msg.payload.fan_status : '--'\n          });\n        }\n\n        // Limitar el historial a 30 entradas para no saturar\n        if (scope.historial.length > 30) {\n          scope.historial.shift();\n        }\n        renderSummaryTable();\n      }\n    });\n\n    // Renderizar la tabla al cargar por primera vez\n    renderSummaryTable();\n\n    // --- pH Highlight ---\n    function highlightPh() {\n      var phSpan = document.getElementById('ph');\n      if (!phSpan) return;\n      var ph = parseFloat(phSpan.textContent);\n      phSpan.classList.remove('ph-alert-low', 'ph-alert-high', 'ph-ok');\n      phSpan.removeAttribute('title');\n      if (isNaN(ph)) return;\n      if (ph < 5.5) {\n        phSpan.classList.add('ph-alert-low');\n        phSpan.title = \"¡pH bajo! Puede afectar el crecimiento.\";\n      } else if (ph > 7.5) {\n        phSpan.classList.add('ph-alert-high');\n        phSpan.title = \"¡pH alto! Puede afectar el crecimiento.\";\n      } else {\n        phSpan.classList.add('ph-ok');\n        phSpan.title = \"pH óptimo para la mayoría de cultivos.\";\n      }\n    }\n\n    function highlightPhTable() {\n      document.querySelectorAll('.summary-table td:nth-child(4)').forEach(function(cell) {\n        cell.classList.remove('ph-alert-low', 'ph-alert-high', 'ph-ok');\n        var ph = parseFloat(cell.textContent);\n        cell.removeAttribute('title');\n        if (isNaN(ph)) return;\n        if (ph < 5.5) {\n          cell.classList.add('ph-alert-low');\n          cell.title = \"¡pH bajo! Puede afectar el crecimiento.\";\n        } else if (ph > 7.5) {\n          cell.classList.add('ph-alert-high');\n          cell.title = \"¡pH alto! Puede afectar el crecimiento.\";\n        } else {\n          cell.classList.add('ph-ok');\n          cell.title = \"pH óptimo para la mayoría de cultivos.\";\n        }\n      });\n    }\n\n    // Observar cambios para actualizar el resaltado\n    var observer = new MutationObserver(function() {\n      highlightPh();\n      highlightPhTable();\n    });\n    observer.observe(document.body, { childList: true, subtree: true });\n\n    window.addEventListener('DOMContentLoaded', function() {\n      highlightPh();\n      highlightPhTable();\n    });\n\n  })(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 2010,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4feb035bcddafaa9",
+        "type": "random",
+        "z": "db1a820d5238bd1a",
+        "name": "Generar pH Aleatorio",
+        "low": "4.5",
+        "high": "8.5",
+        "inte": "false",
+        "property": "payload",
+        "x": 700,
+        "y": 240,
+        "wires": [
+            [
+                "f5d5e7324c9c411d"
+            ]
+        ]
+    },
+    {
+        "id": "f5d5e7324c9c411d",
+        "type": "change",
+        "z": "db1a820d5238bd1a",
+        "name": "Establecer Topic: pH",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "ph",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 960,
+        "y": 260,
+        "wires": [
+            [
+                "8175f91cea9a6467"
+            ]
+        ]
+    },
+    {
+        "id": "8175f91cea9a6467",
+        "type": "function",
+        "z": "db1a820d5238bd1a",
+        "name": "Ensamblar Datos para Dashboard",
+        "func": "// Este nodo combina los datos de clima, pH, estado de riego, sombra y ventilador\n// en un solo objeto para el ui_template principal. Utiliza el contexto del nodo\n// para almacenar los últimos valores recibidos de cada fuente.\n\nlet latestWeatherData = context.get('latestWeatherData') || { temperatura: '--', humedad: '--', descripcion: '--' };\nlet latestPhData = context.get('latestPhData') || { ph: '--' };\nlet latestRiegoStatus = context.get('latestRiegoStatus') || { status: '--' };\nlet latestShadeStatus = context.get('latestShadeStatus') || { status: '--' }; \nlet latestFanStatus = context.get('latestFanStatus') || { status: '--' };          \n\n// Verificar el topic del mensaje entrante para identificar la fuente de datos y actualizar el contexto.\nif (msg.topic === 'weather_data' && msg.payload) {\n    latestWeatherData = {\n        temperatura: msg.payload.temperatura,\n        humedad: msg.payload.humedad,\n        descripcion: msg.payload.descripcion\n    };\n    context.set('latestWeatherData', latestWeatherData);\n} else if (msg.topic === 'ph' && typeof msg.payload === 'number') {\n    latestPhData = { ph: msg.payload };\n    context.set('latestPhData', latestPhData);\n} else if (msg.topic === 'riego_status' && msg.payload !== undefined) { \n    latestRiegoStatus = { status: msg.payload };\n    context.set('latestRiegoStatus', latestRiegoStatus);\n} else if (msg.topic === 'shade_status' && msg.payload !== undefined) { \n    latestShadeStatus = { status: msg.payload };\n    context.set('latestShadeStatus', latestShadeStatus);\n} else if (msg.topic === 'fan_status' && msg.payload !== undefined) {          \n    latestFanStatus = { status: msg.payload };\n    context.set('latestFanStatus', latestFanStatus);\n}\n\n// Construir el payload combinado con los datos más recientes para el UI.\nmsg.payload = {\n    temperature: latestWeatherData.temperatura,\n    humidity: latestWeatherData.humedad,\n    description: latestWeatherData.descripcion,\n    ph: latestPhData.ph,\n    riego_status: latestRiegoStatus.status,\n    shade_status: latestShadeStatus.status, \n    fan_status: latestFanStatus.status          \n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "// Este código se ejecuta cuando el flujo se despliega o el nodo se inicia.\n// Inicializa las variables de contexto para asegurar que siempre existen y tienen un valor por defecto.\ncontext.set('latestWeatherData', { temperatura: '--', humedad: '--', descripcion: '--' });\ncontext.set('latestPhData', { ph: '--' });\ncontext.set('latestRiegoStatus', { status: '--' });\ncontext.set('latestShadeStatus', { status: '--' }); \ncontext.set('latestFanStatus', { status: '--' });          \nnode.log(\"Contexto del ensamblador inicializado.\");",
+        "finalize": "",
+        "libs": [],
+        "x": 1640,
+        "y": 320,
+        "wires": [
+            [
+                "65775cbab450ab3e"
+            ]
+        ]
+    },
+    {
+        "id": "1195a3ef65e7f7c2",
+        "type": "telegrambot-notify",
+        "z": "db1a820d5238bd1a",
+        "name": "Notificación Telegram",
+        "bot": "telegram_bot_config",
+        "chatId": "1788532181",
+        "message": "",
+        "parseMode": "",
+        "x": 1060,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "28dab68354b9298c",
+        "type": "mqtt out",
+        "z": "db1a820d5238bd1a",
+        "name": "Publicar Comando Sombra (MQTT)",
+        "topic": "utmach/fic/6to/Proyecto/Iot/HuertoUrbano/sombra",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "428204ff249e5d7c",
+        "x": 610,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "6d884fc4fc6a9a4c",
+        "type": "mqtt in",
+        "z": "db1a820d5238bd1a",
+        "name": "Suscribir Estado Sombra (MQTT)",
+        "topic": "utmach/fic/6to/Proyecto/Iot/HuertoUrbano/sombra",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "428204ff249e5d7c",
+        "nl": false,
+        "rap": false,
+        "rh": 0,
+        "inputs": 0,
+        "x": 390,
+        "y": 820,
+        "wires": [
+            [
+                "0c41cf93d232f4bf"
+            ]
+        ]
+    },
+    {
+        "id": "0c41cf93d232f4bf",
+        "type": "change",
+        "z": "db1a820d5238bd1a",
+        "name": "Establecer Topic: Estado Sombra",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "shade_status",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 840,
+        "y": 800,
+        "wires": [
+            [
+                "8175f91cea9a6467"
+            ]
+        ]
+    },
+    {
+        "id": "fcee5070de9f4c4c",
+        "type": "mqtt out",
+        "z": "db1a820d5238bd1a",
+        "name": "Publicar Comando Ventilador (MQTT)",
+        "topic": "utmach/fic/6to/Proyecto/Iot/HuertoUrbano/ventilador",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "5143f1e78ea12321",
+        "x": 610,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "715ccf24e468a4cc",
+        "type": "mqtt in",
+        "z": "db1a820d5238bd1a",
+        "name": "Suscribir Estado Ventilador (MQTT)",
+        "topic": "utmach/fic/6to/Proyecto/Iot/HuertoUrbano/ventilador",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "5143f1e78ea12321",
+        "nl": false,
+        "rap": false,
+        "rh": 0,
+        "inputs": 0,
+        "x": 840,
+        "y": 1060,
+        "wires": [
+            [
+                "e1f0691c83a873ce"
+            ]
+        ]
+    },
+    {
+        "id": "e1f0691c83a873ce",
+        "type": "change",
+        "z": "db1a820d5238bd1a",
+        "name": "Establecer Topic: Estado Ventilador",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "fan_status",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1220,
+        "y": 1060,
+        "wires": [
+            [
+                "8175f91cea9a6467"
+            ]
+        ]
+    },
+    {
+        "id": "e6a9d2dcf74f682a",
+        "type": "mqtt out",
+        "z": "db1a820d5238bd1a",
+        "name": "Publicar Comando Riego (MQTT)",
+        "topic": "utmach/fic/6to/Proyecto/Iot/HuertoUrbano/riego",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "428204ff249e5d7c",
+        "x": 660,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "023195a9c3500969",
+        "type": "mqtt in",
+        "z": "db1a820d5238bd1a",
+        "name": "Suscribir Estado Riego (MQTT)",
+        "topic": "utmach/fic/6to/Proyecto/Iot/HuertoUrbano/riego",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "428204ff249e5d7c",
+        "nl": false,
+        "rap": false,
+        "rh": 0,
+        "inputs": 0,
+        "x": 910,
+        "y": 420,
+        "wires": [
+            [
+                "8e3be2d6d2b7d084"
+            ]
+        ]
+    },
+    {
+        "id": "8e3be2d6d2b7d084",
+        "type": "change",
+        "z": "db1a820d5238bd1a",
+        "name": "Establecer Topic: Estado Riego",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "riego_status",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1190,
+        "y": 420,
+        "wires": [
+            [
+                "8175f91cea9a6467"
+            ]
+        ]
+    },
+    {
+        "id": "18e52f1a91b3300c",
+        "type": "ui_template",
+        "z": "db1a820d5238bd1a",
+        "group": "2342dc7959fd1dee",
+        "name": "Visualización Clima",
+        "order": 3,
+        "width": 5,
+        "height": 4,
+        "format": "\n<div\n    class=\"flex items-center justify-center p-4 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-lg w-full max-w-sm mx-auto\">\n    <div class=\"text-center font-inter\">\n        <p class=\"text-sm md:text-base text-gray-700 mb-1\">Clima</p>\n        <div class=\"flex items-center justify-center\">\n            \n            <svg class=\"w-8 h-8 md:w-10 md:h-10 text-gray-600 mr-2\" fill=\"none\" stroke=\"currentColor\"\n                viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n                <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"\n                    d=\"M3 15a4 4 0 004 4h9a5 5 0 00-1-9.96M5 15a2 2 0 112-2V9a2 2 0 012-2h4a2 2 0 110 4h-2.5\"></path>\n            </svg>\n            \n            <span class=\"text-2xl md:text-4xl font-bold text-gray-800 capitalize\">\n                {{msg.payload}}\n            </span>\n        </div>\n    </div>\n</div>\n\n\n<script src=\"https://cdn.tailwindcss.com\"></script>\n\n<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap\" rel=\"stylesheet\">\n<style>\n    /* Define la fuente Inter para todo el cuerpo */\n    body {\n        font-family: 'Inter', sans-serif;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1510,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "501bbac507141bb2",
+        "type": "function",
+        "z": "db1a820d5238bd1a",
+        "name": "Procesar Datos del Clima y Guardar Historial",
+        "func": "// Este nodo procesa la respuesta de OpenWeatherMap y la prepara para el dashboard.\n// También guarda los datos en un historial de flujo (flow.climaHist).\n\nlet datos = {};\ntry {\n    datos = {\n        temperatura: msg.payload.main.temp,\n        humedad: msg.payload.main.humidity,\n        descripcion: msg.payload.weather[0].description\n    };\n} catch (e) {\n    node.error(\"Error al procesar datos de OpenWeatherMap: \" + e.message, msg);\n    // Enviar valores por defecto para evitar errores en nodos siguientes si la API falla\n    datos = {\n        temperatura: '--',\n        humedad: '--',\n        descripcion: 'Error en API'\n    };\n}\n\n// Guardar en historial de flujo (flow.climaHist)\nlet historial = flow.get('climaHist') || [];\nhistorial.push({\n    timestamp: Date.now(),\n    ...datos // Almacenar el objeto de datos estructurado\n});\nif (historial.length > 50) historial.shift(); // Limitar a 50 entradas para evitar el crecimiento excesivo\nflow.set('climaHist', historial);\n\n// Salidas del nodo function:\n// Output 1: Objeto completo para el ensamblador del dashboard (topic: \"weather_data\")\n// Output 2: Temperatura para visualización directa (ej: en ui_text)\n// Output 3: Humedad para visualización directa\n// Output 4: Descripción del clima para visualización directa\nreturn [\n    { payload: datos, topic: \"weather_data\" }, \n    { payload: datos.temperatura },\n    { payload: datos.humedad },\n    { payload: datos.descripcion }\n];",
+        "outputs": 4,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 120,
+        "wires": [
+            [
+                "8175f91cea9a6467"
+            ],
+            [
+                "18a8e71e073e4132"
+            ],
+            [
+                "18e52f1a91b3300c",
+                "679994c8cfed7534"
+            ],
+            [
+                "18e52f1a91b3300c"
+            ]
+        ]
+    },
+    {
+        "id": "679994c8cfed7534",
+        "type": "ui_template",
+        "z": "db1a820d5238bd1a",
+        "group": "2342dc7959fd1dee",
+        "name": "Visualización Humedad",
+        "order": 2,
+        "width": 5,
+        "height": 4,
+        "format": "\n<div class=\"flex items-center justify-center p-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl shadow-lg w-full max-w-sm mx-auto\">\n    <div class=\"text-center font-inter\">\n        <p class=\"text-sm md:text-base text-gray-700 mb-1\">Humedad</p>\n        <div class=\"flex items-center justify-center\">\n            \n            <svg class=\"w-8 h-8 md:w-10 md:h-10 text-blue-600 mr-2\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n                <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z\"></path>\n            </svg>\n            \n            <span class=\"text-3xl md:text-5xl font-bold text-blue-800\">\n                {{msg.payload | number:0}}\n            </span>\n            <span class=\"text-xl md:text-3xl text-blue-600 ml-1\">%</span>\n        </div>\n    </div>\n</div>\n\n\n<script src=\"https://cdn.tailwindcss.com\"></script>\n\n<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap\" rel=\"stylesheet\">\n<style>\n  /* Define la fuente Inter para todo el cuerpo */\n  body {\n    font-family: 'Inter', sans-serif;\n  }\n</style>\n",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1510,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "18a8e71e073e4132",
+        "type": "ui_template",
+        "z": "db1a820d5238bd1a",
+        "group": "2342dc7959fd1dee",
+        "name": "Visualización Temperatura",
+        "order": 1,
+        "width": 5,
+        "height": 4,
+        "format": "\n<div\n    class=\"flex items-center justify-center p-4 bg-gradient-to-br from-red-100 to-red-200 rounded-xl shadow-lg w-full max-w-sm mx-auto\">\n    <div class=\"text-center font-inter\">\n        <p class=\"text-sm md:text-base text-gray-700 mb-1\">Temperatura Actual</p>\n        <div class=\"flex items-center justify-center\">\n            \n            <svg class=\"w-8 h-8 md:w-10 md:h-10 text-red-600 mr-2\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"\n                xmlns=\"http://www.w3.org/2000/svg\">\n                <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"\n                    d=\"M17.657 16.727A8 8 0 016.343 7.273L7.273 6.343A8 8 0 0116.727 17.657L17.657 16.727zM6.343 7.273l7.487-7.487M6.343 7.273l-.707.707M10 12h4m-2-4v8\">\n                </path>\n            </svg>\n            \n            <span class=\"text-3xl md:text-5xl font-bold text-red-800\">\n                {{msg.payload | number:1}}\n            </span>\n            <span class=\"text-xl md:text-3xl text-red-600 ml-1\">°C</span>\n        </div>\n    </div>\n</div>\n\n\n<script src=\"https://cdn.tailwindcss.com\"></script>\n\n<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap\" rel=\"stylesheet\">\n<style>\n    /* Define la fuente Inter para todo el cuerpo */\n    body {\n        font-family: 'Inter', sans-serif;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1460,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "793ce3988d3526cb",
+        "type": "ui_template",
+        "z": "db1a820d5238bd1a",
+        "group": "4d19e5e8f200d6d2",
+        "name": "Control Riego (Toggle Switch)",
+        "order": 1,
+        "width": 5,
+        "height": 4,
+        "format": "<style>\n    /* Base para el contenedor del switch */\n    .switch-container {\n        display: flex;\n        flex-direction: column;\n        align-items: center;\n        justify-content: center;\n        height: 100%;\n        background-color: #f0f4f7;\n        border-radius: 12px;\n        padding: 10px;\n        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);\n        font-family: 'Poppins', sans-serif;\n    }\n\n    .switch-label {\n        font-size: 1.1em;\n        font-weight: 600;\n        color: #34495e;\n        margin-bottom: 15px;\n    }\n\n    /* El switch de encendido/apagado */\n    .toggle-switch {\n        position: relative;\n        display: inline-block;\n        width: 80px; /* Ancho del switch */\n        height: 40px; /* Alto del switch */\n    }\n\n    .toggle-switch input { \n        opacity: 0;\n        width: 0;\n        height: 0;\n    }\n\n    .slider {\n        position: absolute;\n        cursor: pointer;\n        top: 0;\n        left: 0;\n        right: 0;\n        bottom: 0;\n        background-color: #e76f51; /* Color OFF */\n        -webkit-transition: .4s;\n        transition: .4s;\n        border-radius: 40px; /* Bordes redondeados */\n    }\n\n    .slider:before {\n        position: absolute;\n        content: \"\";\n        height: 32px; /* Alto del \"botón\" del switch */\n        width: 32px; /* Ancho del \"botón\" del switch */\n        left: 4px; /* Posición inicial del botón */\n        bottom: 4px; /* Posición inicial del botón */\n        background-color: white;\n        -webkit-transition: .4s;\n        transition: .4s;\n        border-radius: 50%; /* Circular */\n        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);\n    }\n\n    input:checked + .slider {\n        background-color: #2a9d8f; /* Color ON */\n    }\n\n    input:focus + .slider {\n        box-shadow: 0 0 1px #2a9d8f;\n    }\n\n    input:checked + .slider:before {\n        -webkit-transform: translateX(40px); /* Mover el botón a la derecha */\n        -ms-transform: translateX(40px);\n        transform: translateX(40px);\n    }\n</style>\n\n<div class=\"switch-container\">\n    <span class=\"switch-label\">Control de Riego</span>\n    <label class=\"toggle-switch\">\n        <input type=\"checkbox\" id=\"riegoToggle\">\n        <span class=\"slider\"></span>\n    </label>\n</div>\n\n<script>\n    (function(scope) {\n        const toggle = document.getElementById('riegoToggle');\n\n        // Listener para cuando el switch cambia de estado\n        toggle.addEventListener('change', function() {\n            const command = this.checked ? \"ON\" : \"OFF\";\n            // Envía el comando MQTT a través de Node-RED\n            scope.send({ payload: command, topic: \"huerto/actuador/riego/set\" });\n        });\n\n        // Escucha los mensajes entrantes para actualizar el estado del switch en la UI\n        scope.$watch('msg', function(msg) {\n            if (msg && msg.topic === 'riego_status' && msg.payload !== undefined) {\n                // Actualiza el estado visual del switch si el estado del riego cambia externamente\n                toggle.checked = (msg.payload === 'ON');\n            }\n        });\n\n        // Recuperar el estado inicial del riego si está disponible al cargar\n        // (Asume que se recibirá un mensaje de 'riego_status' al inicio o al desplegar)\n        if (scope.msg && scope.msg.topic === 'riego_status' && scope.msg.payload !== undefined) {\n            toggle.checked = (scope.msg.payload === 'ON');\n        }\n\n    })(scope);\n</script>\n",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 230,
+        "y": 600,
+        "wires": [
+            [
+                "e6a9d2dcf74f682a"
+            ]
+        ]
+    },
+    {
+        "id": "5fa5fbf009c0b973",
+        "type": "ui_template",
+        "z": "db1a820d5238bd1a",
+        "group": "4d19e5e8f200d6d2",
+        "name": "Control Sombra (Toggle Switch)",
+        "order": 2,
+        "width": 5,
+        "height": 4,
+        "format": "<style>\n    /* Estilos para el contenedor del switch */\n    .switch-container {\n        display: flex;\n        flex-direction: column;\n        align-items: center;\n        justify-content: center;\n        height: 100%;\n        background-color: #f0f4f7;\n        border-radius: 12px;\n        padding: 10px;\n        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);\n        font-family: 'Poppins', sans-serif;\n    }\n\n    .switch-label {\n        font-size: 1.1em;\n        font-weight: 600;\n        color: #34495e;\n        margin-bottom: 15px;\n    }\n\n    /* El switch de encendido/apagado */\n    .toggle-switch {\n        position: relative;\n        display: inline-block;\n        width: 80px;\n        height: 40px;\n    }\n\n    .toggle-switch input { \n        opacity: 0;\n        width: 0;\n        height: 0;\n    }\n\n    .slider {\n        position: absolute;\n        cursor: pointer;\n        top: 0;\n        left: 0;\n        right: 0;\n        bottom: 0;\n        background-color: #e76f51; /* Color OFF */\n        -webkit-transition: .4s;\n        transition: .4s;\n        border-radius: 40px;\n    }\n\n    .slider:before {\n        position: absolute;\n        content: \"\";\n        height: 32px;\n        width: 32px;\n        left: 4px;\n        bottom: 4px;\n        background-color: white;\n        -webkit-transition: .4s;\n        transition: .4s;\n        border-radius: 50%;\n        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);\n    }\n\n    input:checked + .slider {\n        background-color: #2a9d8f; /* Color ON */\n    }\n\n    input:focus + .slider {\n        box-shadow: 0 0 1px #2a9d8f;\n    }\n\n    input:checked + .slider:before {\n        -webkit-transform: translateX(40px);\n        -ms-transform: translateX(40px);\n        transform: translateX(40px);\n    }\n</style>\n\n<div class=\"switch-container\">\n    <span class=\"switch-label\">Control de Sombra</span>\n    <label class=\"toggle-switch\">\n        <input type=\"checkbox\" id=\"sombraToggle\">\n        <span class=\"slider\"></span>\n    </label>\n</div>\n\n<script>\n    (function(scope) {\n        const toggle = document.getElementById('sombraToggle');\n\n        toggle.addEventListener('change', function() {\n            const command = this.checked ? \"ON\" : \"OFF\";\n            scope.send({ payload: command, topic: \"huerto/actuador/sombra/set\" });\n        });\n\n        scope.$watch('msg', function(msg) {\n            if (msg && msg.topic === 'shade_status' && msg.payload !== undefined) {\n                toggle.checked = (msg.payload === 'ON');\n            }\n        });\n\n        if (scope.msg && scope.msg.topic === 'shade_status' && scope.msg.payload !== undefined) {\n            toggle.checked = (scope.msg.payload === 'ON');\n        }\n\n    })(scope);\n</script>\n",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 130,
+        "y": 720,
+        "wires": [
+            [
+                "28dab68354b9298c"
+            ]
+        ]
+    },
+    {
+        "id": "1d6447a98391aa54",
+        "type": "ui_template",
+        "z": "db1a820d5238bd1a",
+        "group": "4d19e5e8f200d6d2",
+        "name": "Control Ventilador (Toggle Switch)",
+        "order": 3,
+        "width": 5,
+        "height": 4,
+        "format": "<style>\n    /* Estilos para el contenedor del switch */\n    .switch-container {\n        display: flex;\n        flex-direction: column;\n        align-items: center;\n        justify-content: center;\n        height: 100%;\n        background-color: #f0f4f7;\n        border-radius: 12px;\n        padding: 10px;\n        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);\n        font-family: 'Poppins', sans-serif;\n    }\n\n    .switch-label {\n        font-size: 1.1em;\n        font-weight: 600;\n        color: #34495e;\n        margin-bottom: 15px;\n    }\n\n    /* El switch de encendido/apagado */\n    .toggle-switch {\n        position: relative;\n        display: inline-block;\n        width: 80px;\n        height: 40px;\n    }\n\n    .toggle-switch input { \n        opacity: 0;\n        width: 0;\n        height: 0;\n    }\n\n    .slider {\n        position: absolute;\n        cursor: pointer;\n        top: 0;\n        left: 0;\n        right: 0;\n        bottom: 0;\n        background-color: #e76f51; /* Color OFF */\n        -webkit-transition: .4s;\n        transition: .4s;\n        border-radius: 40px;\n    }\n\n    .slider:before {\n        position: absolute;\n        content: \"\";\n        height: 32px;\n        width: 32px;\n        left: 4px;\n        bottom: 4px;\n        background-color: white;\n        -webkit-transition: .4s;\n        transition: .4s;\n        border-radius: 50%;\n        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);\n    }\n\n    input:checked + .slider {\n        background-color: #2a9d8f; /* Color ON */\n    }\n\n    input:focus + .slider {\n        box-shadow: 0 0 1px #2a9d8f;\n    }\n\n    input:checked + .slider:before {\n        -webkit-transform: translateX(40px);\n        -ms-transform: translateX(40px);\n        transform: translateX(40px);\n    }\n</style>\n\n<div class=\"switch-container\">\n    <span class=\"switch-label\">Control de Ventilador</span>\n    <label class=\"toggle-switch\">\n        <input type=\"checkbox\" id=\"ventiladorToggle\">\n        <span class=\"slider\"></span>\n    </label>\n</div>\n\n<script>\n    (function(scope) {\n        const toggle = document.getElementById('ventiladorToggle');\n\n        toggle.addEventListener('change', function() {\n            const command = this.checked ? \"ON\" : \"OFF\";\n            scope.send({ payload: command, topic: \"huerto/actuador/ventilador/set\" });\n        });\n\n        scope.$watch('msg', function(msg) {\n            if (msg && msg.topic === 'fan_status' && msg.payload !== undefined) {\n                toggle.checked = (msg.payload === 'ON');\n            }\n        });\n\n        if (scope.msg && scope.msg.topic === 'fan_status' && scope.msg.payload !== undefined) {\n            toggle.checked = (scope.msg.payload === 'ON');\n        }\n\n    })(scope);\n</script>\n",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 200,
+        "y": 900,
+        "wires": [
+            [
+                "fcee5070de9f4c4c"
+            ]
+        ]
+    },
+    {
+        "id": "cb1e935c16fb2198",
+        "type": "function",
+        "z": "db1a820d5238bd1a",
+        "name": "Lógica de Automatización (5 Salidas)",
+        "func": "let climaHist = flow.get('climaHist');\n\n// Inicializar todos los estados a OFF por defecto si no hay datos de clima válidos\nlet estadoRiego = \"OFF\";\nlet estadoSombra = \"OFF\";\nlet estadoVentilador = \"OFF\";\nlet mensajesTelegram = [];\n\nif (!climaHist || climaHist.length === 0) {\n    node.warn(\"Historial de clima (flow.climaHist) vacío. No se puede automatizar. Enviando OFF por defecto.\");\n} else {\n    let actual = climaHist[climaHist.length - 1];\n    if (typeof actual.temperatura === 'undefined' || actual.temperatura === '--' ||\n        typeof actual.humedad === 'undefined' || actual.humedad === '--') {\n        node.warn(\"Último dato del historial de clima no tiene el formato esperado o es inválido: \" + JSON.stringify(actual));\n    } else {\n        // --- Lógica de Riego ---\n        if (actual.temperatura > 20 || actual.humedad < 70) {\n            estadoRiego = \"ON\";\n            let mensajeTelRiego = `🚨 Riego activado automáticamente.\\nCondiciones: Temp=${actual.temperatura}°C, Hum=${actual.humedad}%`;\n            if (actual.descripcion) mensajeTelRiego += `, Clima: ${actual.descripcion}`;\n            mensajesTelegram.push({ payload: mensajeTelRiego });\n        }\n\n        // --- Lógica de Sombra ---\n        if (actual.temperatura > 20) {\n            estadoSombra = \"ON\";\n            let mensajeTelSombra = `⛱️ Sombra activada automáticamente.\\nCondiciones: Temp=${actual.temperatura}°C`;\n            if (actual.descripcion) mensajeTelSombra += `, Clima: ${actual.descripcion}`;\n            mensajesTelegram.push({ payload: mensajeTelSombra });\n        }\n\n        // --- Lógica de Ventilador ---\n        if (actual.temperatura > 20) {\n            estadoVentilador = \"ON\";\n            let mensajeTelVentilador = `🌬️ Ventilador activado automáticamente.\\nCondiciones: Temp=${actual.temperatura}°C`;\n            if (actual.descripcion) mensajeTelVentilador += `, Clima: ${actual.descripcion}`;\n            mensajesTelegram.push({ payload: mensajeTelVentilador });\n        }\n    }\n}\n\n// Mensajes de salida\nlet msgDashboard = { \n    payload: {\n        riego_status: estadoRiego,\n        shade_status: estadoSombra,\n        fan_status: estadoVentilador\n    }, \n    topic: \"automated_status_update\" // Nuevo topic consolidado para el dashboard\n};\n\nlet msgMqttRiegoCommand = { payload: estadoRiego, topic: \"huerto/actuador/riego/set\" };\nlet msgMqttSombraCommand = { payload: estadoSombra, topic: \"huerto/actuador/sombra/set\" };\nlet msgMqttVentiladorCommand = { payload: estadoVentilador, topic: \"huerto/actuador/ventilador/set\" };\n\n// Definir las 5 salidas del nodo Function\n// Salida 1 (0): Mensaje Consolidado para Dashboard (riego, sombra, ventilador)\n// Salida 2 (1): Mensajes de Telegram (array de mensajes)\n// Salida 3 (2): Comando MQTT Riego\n// Salida 4 (3): Comando MQTT Sombra\n// Salida 5 (4): Comando MQTT Ventilador\n\nreturn [\n    msgDashboard,\n    mensajesTelegram.length > 0 ? mensajesTelegram : null, // Solo envía si hay mensajes\n    msgMqttRiegoCommand,\n    msgMqttSombraCommand,\n    msgMqttVentiladorCommand\n];",
+        "outputs": 5,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 340,
+        "wires": [
+            [
+                "8175f91cea9a6467"
+            ],
+            [
+                "1195a3ef65e7f7c2"
+            ],
+            [
+                "e6a9d2dcf74f682a"
+            ],
+            [
+                "28dab68354b9298c"
+            ],
+            [
+                "fcee5070de9f4c4c"
+            ]
+        ]
+    },
+    {
+        "id": "0c3796f3dbf31d60",
+        "type": "ui_group",
+        "name": "Dashboard Principal Huerto",
+        "tab": "b5323a6969451dbb",
+        "order": 1,
+        "disp": true,
+        "width": 22,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "telegram_bot_config",
+        "type": "telegrambot-config",
+        "botname": "huertitoUrbanoInteligenteBot",
+        "usernames": "",
+        "chatIds": "",
+        "pollInterval": "300"
+    },
+    {
+        "id": "428204ff249e5d7c",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.hivemq.com",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "5143f1e78ea12321",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.hivemq.com",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "2342dc7959fd1dee",
+        "type": "ui_group",
+        "name": "Clima Actual (OpenWeatherMap)",
+        "tab": "b5323a6969451dbb",
+        "order": 2,
+        "disp": true,
+        "width": 15,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "4d19e5e8f200d6d2",
+        "type": "ui_group",
+        "name": "Control de Actuadores",
+        "tab": "b5323a6969451dbb",
+        "order": 3,
+        "disp": true,
+        "width": 15,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "b5323a6969451dbb",
+        "type": "ui_tab",
+        "name": "Huerto Inteligente",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
