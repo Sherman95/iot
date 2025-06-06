@@ -1,4 +1,3 @@
-¡Claro\! Aquí tienes una plantilla de `README.md` completa y profesional para tu proyecto de "Huerto Urbano Inteligente" en GitHub. La he diseñado para ser clara, informativa y atractiva, cubriendo los puntos clave que un proyecto de IoT y automatización suele necesitar.
 
 -----
 
