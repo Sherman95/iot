@@ -1,0 +1,499 @@
+[
+    {
+        "id": "fdf5fd7b005114ac",
+        "type": "tab",
+        "label": "Dashboard Definitivo v5.1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "4e91dec7a7e66d5b",
+        "type": "ui_template",
+        "z": "fdf5fd7b005114ac",
+        "group": "52857e492215c2bb",
+        "name": "Librerías Externas (CSS/JS)",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "format": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap\" rel=\"stylesheet\">\n\n<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">\n\n<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css\">\n\n<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\">\n\n<!-- Carga explícita del CSS de Toastr en la versión 2.1.4 para coincidir con el JS -->\n<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css\">\n\n<script src=\"https://code.jquery.com/jquery-3.7.1.min.js\"></script>\n\n<script src=\"https://cdn.jsdelivr.net/npm/sweetalert2@11\"></script>\n\n<script src=\"https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js\"></script>\n\n<!-- ECHARTS SCRIPT IS ALREADY HERE FOR GLOBAL AVAILABILITY -->\n<script src=\"https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js\"></script>\n\n<script>\n    // Configuramos Toastr una sola vez para todo el dashboard\n    // Usamos un pequeño setTimeout para asegurar que Toastr esté completamente cargado y disponible\n    setTimeout(function() {\n        if (typeof toastr !== 'undefined') { // Add a check to be extra safe\n            toastr.options = {\n                \"closeButton\": true,\n                \"debug\": false,\n                \"newestOnTop\": true,\n                \"progressBar\": true,\n                \"positionClass\": \"toast-top-right\",\n                \"preventDuplicates\": false,\n                \"onclick\": null,\n                \"showDuration\": \"300\",\n                \"hideDuration\": \"1000\",\n                \"timeOut\": \"4000\",\n                \"extendedTimeOut\": \"1000\",\n                \"showEasing\": \"swing\",\n                \"hideEasing\": \"linear\",\n                \"showMethod\": \"fadeIn\",\n                \"hideMethod\": \"fadeOut\"\n            }\n            console.log(\"Toastr configured successfully with timeout.\");\n        } else {\n            console.error(\"Toastr is still not defined after timeout. Manual inspection needed.\");\n        }\n    }, 100); // 100ms delay for configuration\n</script>\n",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "global",
+        "className": "",
+        "x": 380,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "06fafe3b1ea5efad",
+        "type": "inject",
+        "z": "fdf5fd7b005114ac",
+        "name": "Al Desplegar",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 60,
+        "wires": [
+            [
+                "b697b3dcd1a877a8"
+            ]
+        ]
+    },
+    {
+        "id": "b697b3dcd1a877a8",
+        "type": "function",
+        "z": "fdf5fd7b005114ac",
+        "name": "INICIALIZADOR",
+        "func": "// Inicializar todas las variables de flow al desplegar el flujo\n// Aseguramos que TODAS las variables usadas en el Agregador de Datos tengan un valor inicial\nflow.set('tick', 0);\nflow.set('tankLevel', 80); // Nivel de tanque inicial\nflow.set('soilMoisture', 65); // Humedad del suelo inicial\nflow.set('pumpOn', false); // Estado inicial de la bomba\nflow.set('lightsOn', false); // Estado inicial de las luces\nflow.set('nutriente_A', 75); // Nivel inicial de nutriente A\nflow.set('nutriente_B', 60); // Nivel inicial de nutriente B\nflow.set('soil_nutrient_level', 90); // Nivel inicial de nutrientes en el suelo\nflow.set('soil_sensor_status', 'ok'); // Estado inicial del sensor de suelo: 'ok', 'error'\nflow.set('plantHealth', 100); // Salud inicial de la planta (100%)\n\n// Variables de configuración iniciales\nflow.set('config_umbral_riego', 35); // Umbral de riego por defecto\nflow.set('config_pump_override', 'auto'); // Modo de bomba por defecto\nflow.set('config_lights_override', 'auto'); // Modo de luces por defecto\nflow.set('config_lights_intensity', 100); // Intensidad de luces por defecto\n\n// Datos para las gráficas (arrays vacíos iniciales)\nflow.set('temperaturaData', []);\nflow.set('humedadData', []);\nflow.set('timestampData', []);\n\n// Registro de eventos (array vacío inicial)\nflow.set('event_log', []);\n\n// Datos para el clima real (objeto vacío inicial con defaults)\nflow.set('real_weather', {\n    label: \"Clima Exterior\",\n    description: \"Cargando datos...\",\n    iconUrl: \"\",\n    temp: \"- °C\",\n    humidity: \"- %\"\n});\n\nnode.warn(\"INICIALIZADOR: Todas las variables de flow inicializadas.\");\n\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e41a00cc6c48e67e",
+        "type": "inject",
+        "z": "fdf5fd7b005114ac",
+        "name": "Disparador de Simulación (5s)",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.1",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 120,
+        "wires": [
+            [
+                "f25357e13f5b1a86"
+            ]
+        ]
+    },
+    {
+        "id": "f25357e13f5b1a86",
+        "type": "function",
+        "z": "fdf5fd7b005114ac",
+        "name": "Lógica de Control",
+        "func": "const umbralRiego = flow.get('config_umbral_riego') || 35;\nconst pumpOverride = flow.get('config_pump_override') || 'auto';\nlet soilMoisture = flow.get('soilMoisture') || 65;\nlet oldPumpStatus = flow.get('pumpOn') || false;\nlet newPumpStatus = false;\nif (pumpOverride === 'on') { newPumpStatus = true; }\nelse if (pumpOverride === 'off') { newPumpStatus = false; }\nelse {\n    if (soilMoisture < umbralRiego) { newPumpStatus = true; }\n    else if (soilMoisture > 80) { newPumpStatus = false; }\n    else { newPumpStatus = oldPumpStatus; }\n}\nif (newPumpStatus === true && oldPumpStatus === false) { node.send([null, {payload: \"Bomba de riego activada.\"}]); }\nelse if (newPumpStatus === false && oldPumpStatus === true) { node.send([null, {payload: \"Bomba de riego detenida.\"}]); }\n\nconst lightsOverride = flow.get('config_lights_override') || 'auto';\nlet oldLightsStatus = flow.get('lightsOn') || false;\nlet newLightsStatus = false;\nif (lightsOverride === 'on') { newLightsStatus = true; }\nelse if (lightsOverride === 'off') { newLightsStatus = false; }\nelse {\n    const hour = new Date().getHours();\n    newLightsStatus = (hour >= 18 || hour < 6);\n}\nif (newLightsStatus === true && oldLightsStatus === false) { node.send([null, {payload: \"Luces de crecimiento encendidas.\"}]); }\nelse if (newLightsStatus === false && oldLightsStatus === true) { node.send([null, {payload: \"Luces de crecimiento apagadas.\"}]); }\n\nflow.set('pumpOn', newPumpStatus);\nflow.set('lightsOn', newLightsStatus);\n\nreturn [msg, null];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 120,
+        "wires": [
+            [
+                "48a1e2359a5d584b"
+            ],
+            [
+                "25d2ed934e93fbf9"
+            ]
+        ]
+    },
+    {
+        "id": "25d2ed934e93fbf9",
+        "type": "function",
+        "z": "fdf5fd7b005114ac",
+        "name": "Logger de Eventos",
+        "func": "const MAX_LOG_SIZE = 20;\n\nlet log = flow.get('event_log') || [];\n\nconst timestamp = new Date().toLocaleTimeString('es-EC');\nconst newEntry = {\n    time: timestamp,\n    message: msg.payload\n};\n\nlog.unshift(newEntry);\n\nif (log.length > MAX_LOG_SIZE) {\n    log.pop();\n}\n\nflow.set('event_log', log);\n\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "48a1e2359a5d584b",
+        "type": "function",
+        "z": "fdf5fd7b005114ac",
+        "name": "Simulador de Sensores",
+        "func": "// Obtener los estados actuales de las variables de flow\nlet pumpOn = flow.get('pumpOn') || false;\nlet tankLevel = flow.get('tankLevel') || 80;\nlet soilMoisture = flow.get('soilMoisture') || 65;\nlet tick = flow.get('tick') || 0;\nlet nutrienteA = flow.get('nutriente_A') || 75;\nlet nutrienteB = flow.get('nutriente_B') || 60;\nlet soilNutrients = flow.get('soil_nutrient_level') || 90;\nlet soilSensorStatus = flow.get('soil_sensor_status') || 'ok';\nlet plantHealth = flow.get('plantHealth') || 100; // Obtener el valor actual de la salud de la planta\n\n// --- Simulación de Temperatura y Humedad Ambiente ---\nconst tempBase = 20;\nconst tempAmplitude = 8;\nconst temp = tempBase + Math.sin(tick * 0.1) * tempAmplitude; // Simulación de ciclo día/noche\nconst humidityBase = 60;\nconst humidityAmplitude = 20;\nconst humidity = humidityBase - Math.sin(tick * 0.1) * humidityAmplitude; // Simulación de ciclo día/noche\n\n// --- Lógica PRINCIPAL de Humedad del Suelo y Tanque ---\nif (soilSensorStatus === 'ok') {\n    if (pumpOn) {\n        soilMoisture += 5; // Aumenta la humedad del suelo cuando la bomba está encendida\n        tankLevel -= 2; // El tanque disminuye cuando la bomba está activa\n    } else {\n        soilMoisture -= 0.5; // Disminuye lentamente si la bomba está apagada\n    }\n} else {\n    // Si hay un error en el sensor de suelo, el valor se \"congela\"\n    // (no se actualiza, se mantiene el último valor de flow.get('soilMoisture'))\n}\n\n// --- Consumo de Nutrientes A y B ---\nnutrienteA -= 0.2; // Consumo continuo\nnutrienteB -= 0.3; // Consumo continuo\nsoilNutrients -= 0.1; // Consumo lento de nutrientes en el suelo\n\n// --- Lógica de la Salud de la Planta (AJUSTADA para EXTREMA ROBUSTEZ y RECUPERACIÓN) ---\nlet healthChange = 0; // Se inicializa a 0 en cada tick\n\n// Impacto de la humedad del suelo\nif (soilMoisture < 60) { // Demasiado seco\n    healthChange -= 3.15; // Penalización MÍNIMA por sequedad\n} else if (soilMoisture > 95) { // Demasiado húmedo\n    healthChange -= 4.20; // Penalización MÍNIMA por exceso de agua\n} else { // Rango óptimo de humedad (30-85)\n    healthChange += 5.0; // ¡ENORME recuperación si la humedad es óptima!\n}\n\n// Impacto de los nutrientes del suelo\nif (soilNutrients < 40) { // Nutrientes bajos\n    healthChange -= 3.05; // Penalización MÍNIMA por nutrientes bajos\n} else if (soilNutrients > 95) { // Exceso de nutrientes\n    healthChange -= 3.03; // Penalización MÍNIMA por exceso de nutrientes\n} else { // Rango óptimo de nutrientes (20-95)\n    healthChange += 3.5; // ¡ENORME recuperación si los nutrientes son óptimos!\n}\n\n// Impacto de la temperatura\nif (temp < 15 || temp > 28) { // Temperatura fuera de rango óptimo\n    healthChange -= 1.02; // Penalización MÍNIMA por temperatura extrema\n} else { // Temperatura óptima\n    healthChange += 3.0; // ¡ENORME recuperación si la temperatura es óptima!\n}\n\nplantHealth += healthChange; // Aplica el cambio a la salud de la planta\n\n// Limitar todos los valores para que no sean negativos o excedan el 100%\nif (soilMoisture > 100) soilMoisture = 100;\nif (soilMoisture < 0) soilMoisture = 0;\nif (tankLevel < 0) tankLevel = 0;\nif (nutrienteA < 0) nutrienteA = 0;\nif (nutrienteB < 0) nutrienteB = 0;\nif (soilNutrients < 0) soilNutrients = 0;\nif (plantHealth > 100) plantHealth = 100; // Limitar salud a 100%\nif (plantHealth < 0) plantHealth = 0;     // Limitar salud a 0%\n\n// Guardar los estados actualizados en las variables de flow\nflow.set('soilMoisture', soilMoisture);\nflow.set('tankLevel', tankLevel);\nflow.set('tick', tick + 1);\nflow.set('nutriente_A', nutrienteA);\nflow.set('nutriente_B', nutrienteB);\nflow.set('soil_nutrient_level', soilNutrients);\nflow.set('plantHealth', plantHealth); // Guardar la salud de la planta actualizada\n\n// Preparar datos individuales para el agregador (usando parseFloat para asegurar formato)\nflow.set('sim_temp', parseFloat(temp.toFixed(1)));\nflow.set('sim_hum', parseFloat(humidity.toFixed(1)));\nflow.set('sim_soil', parseFloat(soilMoisture.toFixed(0)));\nflow.set('sim_tank', parseFloat(tankLevel.toFixed(0)));\nflow.set('sim_n_a', parseFloat(nutrienteA.toFixed(1)));\nflow.set('sim_n_b', parseFloat(nutrienteB.toFixed(1)));\nflow.set('sim_soil_nutrients', parseFloat(soilNutrients.toFixed(1)));\nflow.set('sim_soil_status', soilSensorStatus);\nflow.set('sim_plant_health', parseFloat(plantHealth.toFixed(1))); // Para el agregador\n\n// Actualizar datos para las gráficas\nconst MAX_DATAPOINTS = 40;\nlet tempData = flow.get('temperaturaData') || [];\nlet humData = flow.get('humedadData') || [];\nlet xAxisData = flow.get('timestampData') || [];\nlet timestamp = new Date().toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit' });\n\ntempData.push(parseFloat(temp.toFixed(1)));\nhumData.push(parseFloat(humidity.toFixed(1)));\nxAxisData.push(timestamp);\n\nif (tempData.length > MAX_DATAPOINTS) {\n    tempData.shift();\n    humData.shift();\n    xAxisData.shift();\n}\n\nflow.set('temperaturaData', tempData);\nflow.set('humedadData', humData);\nflow.set('timestampData', xAxisData);\n\n// --- Consola de Depuración para Simulador de Sensores (se verá en Node-RED Debug Sidebar) ---\nnode.warn(\"--- DEBUG SIMULADOR DE SENSORES ---\");\nnode.warn(\"Cambio en Salud (healthChange): \" + healthChange.toFixed(2));\nnode.warn(\"Salud de la Planta (calculada): \" + plantHealth.toFixed(1));\nnode.warn(\"Humedad Suelo actual: \" + soilMoisture.toFixed(0));\nnode.warn(\"Nutrientes Suelo actual: \" + soilNutrients.toFixed(1));\nnode.warn(\"Temperatura actual: \" + temp.toFixed(1));\nnode.warn(\"-------------------------------------\");\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 100,
+        "wires": [
+            [
+                "604e3cd5c0a162de"
+            ]
+        ]
+    },
+    {
+        "id": "abaf5ed597e2e7da",
+        "type": "inject",
+        "z": "fdf5fd7b005114ac",
+        "name": "Disparador de Clima (15m)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "900",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.1",
+        "topic": "weather_tick",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 240,
+        "wires": [
+            [
+                "e9674d7f4b69cc0e"
+            ]
+        ]
+    },
+    {
+        "id": "e9674d7f4b69cc0e",
+        "type": "openweathermap",
+        "z": "fdf5fd7b005114ac",
+        "name": "Clima en Pinas, EC",
+        "lon": "-79.6833",
+        "lat": "-3.6833",
+        "city": "",
+        "country": "",
+        "language": "es",
+        "x": 420,
+        "y": 240,
+        "wires": [
+            [
+                "036bcb8e5a377061"
+            ]
+        ]
+    },
+    {
+        "id": "036bcb8e5a377061",
+        "type": "function",
+        "z": "fdf5fd7b005114ac",
+        "name": "Guarda Datos del Clima",
+        "func": "const city = msg.location.city;\nconst description = msg.payload.detail;\nconst icon = msg.payload.icon;\nconst temp = msg.payload.tempc;\nconst humidity = msg.payload.humidity;\n\nconst weatherData = {\n    label: \"Clima Exterior en \" + city,\n    description: description.charAt(0).toUpperCase() + description.slice(1),\n    iconUrl: \"https://openweathermap.org/img/w/\" + icon + \".png\",\n    temp: temp + \" °C\",\n    humidity: humidity + \" %\"\n};\n\nflow.set('real_weather', weatherData);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 240,
+        "wires": [
+            [
+                "604e3cd5c0a162de"
+            ]
+        ]
+    },
+    {
+        "id": "604e3cd5c0a162de",
+        "type": "function",
+        "z": "fdf5fd7b005114ac",
+        "name": "Agregador de Datos",
+        "func": "// Obtener todos los valores de flow, usando valores predeterminados seguros\nconst tankLevel = flow.get('sim_tank') || 80; // Default to 80 if undefined\nconst soilMoisture = flow.get('sim_soil') || 65; // Default to 65 if undefined\nconst umbralRiego = flow.get('config_umbral_riego') || 35; // Default to 35 if undefined\nconst soilNutrients = flow.get('soil_nutrient_level') || 90; // Default to 90 if undefined\nconst plantHealth = flow.get('plantHealth') || 100; // Default to 100 if undefined\nconst soilSensorStatus = flow.get('sim_soil_status') || 'ok'; // Default to 'ok' if undefined\nconst simTemp = flow.get('sim_temp') || 25; // Default to 25 if undefined\nconst simHum = flow.get('sim_hum') || 60; // Default to 60 if undefined\nconst pumpOn = flow.get('pumpOn') || false; // Default to false if undefined\nconst lightsOn = flow.get('lightsOn') || false; // Default to false if undefined\nconst lightsIntensity = flow.get('config_lights_intensity') || 100; // Default to 100 if undefined\nconst pumpOverride = flow.get('config_pump_override') || 'auto'; // Default to 'auto' if undefined\nconst lightsOverride = flow.get('config_lights_override') || 'auto'; // Default to 'auto' if undefined\nconst eventLog = flow.get('event_log') || []; // Default to empty array if undefined\n\n// Cálculos de alerta (ahora usan los valores por defecto si los originales eran undefined)\nconst tankAlert = tankLevel < 20;\nconst soilMoistureAlert = soilMoisture < umbralRiego; // Usa el umbral real o default\nconst nutrientsLowAlert = soilNutrients < 20; // Umbral para nutrientes bajos (ej. < 20%)\n\n// Obtener datos de la gráfica, asegurándose de que sean arrays\nconst temperaturaData = flow.get('temperaturaData') || [];\nconst humedadData = flow.get('humedadData') || [];\nconst timestampData = flow.get('timestampData') || [];\n\n// Obtener datos del clima real, asegurándose de que sea un objeto\nconst realWeather = flow.get('real_weather') || {\n    label: \"Cargando Clima...\",\n    description: \"N/A\",\n    iconUrl: \"\",\n    temp: \"-- °C\",\n    humidity: \"-- %\"\n};\n\n// --- Depuración detallada de variables de entrada para Agregador de Datos ---\nnode.warn(\"--- DEBUG AGREGADOR DE DATOS (Variables de Entrada) ---\");\nnode.warn(\"sim_temp: \" + simTemp);\nnode.warn(\"sim_hum: \" + simHum);\nnode.warn(\"soilMoisture: \" + soilMoisture);\nnode.warn(\"soilNutrients: \" + soilNutrients);\nnode.warn(\"plantHealth: \" + plantHealth);\nnode.warn(\"soilSensorStatus: \" + soilSensorStatus);\nnode.warn(\"tankLevel: \" + tankLevel);\nnode.warn(\"pumpOn: \" + pumpOn);\nnode.warn(\"lightsOn: \" + lightsOn);\nnode.warn(\"umbralRiego (config): \" + umbralRiego);\nnode.warn(\"pumpOverride (config): \" + pumpOverride);\nnode.warn(\"lightsOverride (config): \" + lightsOverride);\nnode.warn(\"lightsIntensity (config): \" + lightsIntensity);\nnode.warn(\"---------------------------------------\");\n\n\nconst payload = {\n    invernadero: {\n        temperatura: simTemp,\n        humedadAire: simHum,\n        humedadSuelo: soilMoisture,\n        nutrientesSuelo: soilNutrients,\n        humedadSueloStatus: soilSensorStatus,\n        nivelTanque: tankLevel,\n        tankAlert: tankAlert,\n        soilMoistureAlert: soilMoistureAlert,\n        nutrientsLowAlert: nutrientsLowAlert,\n        plantHealth: plantHealth,\n        // Asegurar que nutrienteA y nutrienteB también tengan fallbacks\n        nutrienteA: flow.get('nutriente_A') || 75,\n        nutrienteB: flow.get('nutriente_B') || 60,\n        chartData: {\n            seriesData: {\n                temperatura: temperaturaData,\n                humedad: humedadData\n            },\n            xAxisData: timestampData\n        }\n    },\n    sistema: {\n        bombaActiva: pumpOn,\n        lucesActivas: lightsOn\n    },\n    climaReal: realWeather,\n    config: {\n        umbralRiego: umbralRiego,\n        pumpOverride: pumpOverride,\n        lightsOverride: lightsOverride,\n        lightsIntensity: lightsIntensity\n    },\n    log: eventLog\n};\n\nmsg.payload = payload;\n\n// --- Imprimir el payload completo en el Debug Sidebar para depuración ---\nnode.warn(\"--- DEBUG AGREGADOR DE DATOS (Payload Saliente Completo) ---\");\nnode.warn(JSON.stringify(payload, null, 2)); // Imprime el objeto payload formateado\nnode.warn(\"---------------------------------------\");\n\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 120,
+        "wires": [
+            [
+                "fad068f04fb6ab06"
+            ]
+        ]
+    },
+    {
+        "id": "8149f5e4b6abdaa3",
+        "type": "change",
+        "z": "fdf5fd7b005114ac",
+        "name": "Guardar Umbral Riego",
+        "rules": [
+            {
+                "t": "set",
+                "p": "config_umbral_riego",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1080,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7329a45d44e9a384",
+        "type": "change",
+        "z": "fdf5fd7b005114ac",
+        "name": "Guardar Override Bomba",
+        "rules": [
+            {
+                "t": "set",
+                "p": "config_pump_override",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1090,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c52ce99c2e332e82",
+        "type": "switch",
+        "z": "fdf5fd7b005114ac",
+        "name": "Distribuidor de Controles",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "umbral_riego",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "pump_override",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "lights_override",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "lights_intensity",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "abonar_tierra",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "simular_fallo",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 6,
+        "x": 230,
+        "y": 360,
+        "wires": [
+            [
+                "8149f5e4b6abdaa3"
+            ],
+            [
+                "7329a45d44e9a384"
+            ],
+            [
+                "3db9d8ed0740fef0"
+            ],
+            [
+                "4127cca90e950eb1"
+            ],
+            [
+                "b1c2d3e4f5a6b7c8"
+            ],
+            [
+                "c1d2e3f4a5b6c7d9"
+            ]
+        ]
+    },
+    {
+        "id": "3db9d8ed0740fef0",
+        "type": "change",
+        "z": "fdf5fd7b005114ac",
+        "name": "Guardar Override Luces",
+        "rules": [
+            {
+                "t": "set",
+                "p": "config_lights_override",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1070,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4127cca90e950eb1",
+        "type": "change",
+        "z": "fdf5fd7b005114ac",
+        "name": "Guardar Intensidad Luces",
+        "rules": [
+            {
+                "t": "set",
+                "p": "config_lights_intensity",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1080,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fad068f04fb6ab06",
+        "type": "ui_template",
+        "z": "fdf5fd7b005114ac",
+        "group": "52857e492215c2bb",
+        "name": "Single Page Dashboard",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "format": "<script src=\"https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js\"></script>\n\n<div class=\"hydro-tech-dashboard\">\n    <header class=\"dashboard-header\">\n        <h1>Dashboard Huerto Urbano Inteligente IOT</h1>\n        <div id=\"current-time\"></div>\n    </header>\n    <aside class=\"sidebar\">\n        <div class=\"grid-item\">\n            <div class=\"info-card\" id=\"pump-card\"></div>\n        </div>\n        <div class=\"grid-item\">\n            <div class=\"info-card\" id=\"lights-card\"></div>\n        </div>\n        <div class=\"grid-item weather-item\">\n            <div class=\"weather-card\" id=\"weather-card\"></div>\n        </div>\n        <div class=\"grid-item event-log-item\" id=\"event-log-card\"></div>\n    </aside>\n    <main class=\"main-content\">\n        <div class=\"grid-item chart-container\" id=\"chart-container\"></div>\n        <div class=\"grid-item\" id=\"soil-gauge-card\"></div>\n        <div class=\"grid-item\" id=\"tank-gauge-card\"></div>\n        <div class=\"grid-item\" id=\"soil-nutrient-card\"></div>\n        <!-- INICIO: Nueva tarjeta para la salud de la planta -->\n        <div class=\"grid-item\" id=\"plant-health-card\"></div>\n        <!-- FIN: Nueva tarjeta para la salud de la planta -->\n        <div class=\"grid-item config-item\" id=\"config-card\"></div>\n    </main>\n</div>\n\n<style>\n    :root {\n        --bg-main: #f4f7f9;\n        --bg-card: #ffffff;\n        --border-color: #dee2e6;\n        --text-primary: #2c3e50;\n        --text-secondary: #7f8c8d;\n        --accent-green: #27ae60;\n        --accent-blue: #2980b9;\n        --accent-red: #c0392b;\n        --accent-yellow: #f39c12;\n        --soil-color: #967259;\n        --nutrient-color: #8e44ad;\n        --health-color: #2ecc71;\n    }\n\n    .hydro-tech-dashboard {\n        font-family: 'Manrope', sans-serif;\n        display: grid;\n        grid-template-columns: 320px 1fr;\n        grid-template-rows: auto 1fr;\n        grid-template-areas: \"header header\"\"sidebar main\";\n        gap: 15px;\n        width: 100%;\n        height: 100%;\n        padding: 15px;\n        box-sizing: border-box;\n        background-color: var(--bg-main);\n        color: var(--text-primary);\n    }\n\n    .grid-item {\n        background-color: var(--bg-card);\n        color: var(--text-primary);\n        border-radius: 8px;\n        border: 1px solid var(--border-color);\n        padding: 20px;\n        box-sizing: border-box;\n        transition: all 0.3s ease;\n        display: flex;\n        flex-direction: column;\n        justify-content: center;\n        align-items: stretch;\n        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);\n        position: relative;\n    }\n\n    .dashboard-header {\n        grid-area: header;\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        padding: 0 10px;\n        margin-bottom: 5px;\n    }\n\n    .dashboard-header h1 {\n        font-size: 1.8em;\n        color: var(--text-primary);\n        margin: 0;\n    }\n\n    #current-time {\n        font-size: 1.2em;\n        color: var(--text-secondary);\n    }\n\n    .sidebar {\n        grid-area: sidebar;\n        display: grid;\n        grid-template-rows: auto auto 1fr auto;\n        gap: 15px;\n    }\n\n    .main-content {\n        grid-area: main;\n        display: grid;\n        grid-template-columns: repeat(3, 1fr);\n        grid-auto-rows: minmax(180px, auto);\n        gap: 15px;\n    }\n\n    .chart-container {\n        grid-column: 1 / 4;\n        grid-row: span 2;\n        min-height: 400px;\n    }\n\n    .config-item {\n        grid-column: 1 / 4;\n    }\n\n    #soil-gauge-card,\n    #tank-gauge-card,\n    #soil-nutrient-card,\n    #plant-health-card {\n        grid-column: span 1;\n    }\n\n    .event-log-item {\n        min-height: 200px;\n    }\n\n    .info-card,\n    .weather-card,\n    .config-container,\n    .tank-indicator,\n    .event-log-container {\n        height: 100%;\n        width: 100%;\n        display: flex;\n        flex-direction: column;\n        justify-content: center;\n        align-items: stretch;\n        text-align: center;\n    }\n\n    .info-card .label,\n    .config-container .title,\n    .tank-indicator .title,\n    .event-log-container .title {\n        font-size: 0.9em;\n        color: var(--text-secondary);\n        text-transform: uppercase;\n        margin-bottom: 10px;\n        text-align: center;\n        flex-shrink: 0;\n        font-weight: 600;\n    }\n\n    .info-card .value {\n        font-size: 1.6em;\n        font-weight: 700;\n        display: flex;\n        align-items: center;\n        justify-content: center;\n    }\n\n    .weather-card {\n        justify-content: space-around;\n        background: linear-gradient(135deg, var(--accent-blue) 0%, #6dd5ed 100%);\n        /* Fondo degradado */\n        color: white;\n        /* Texto blanco para contraste */\n        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);\n        padding: 15px;\n        /* Ajustar padding */\n        display: flex;\n        flex-direction: column;\n        align-items: center;\n        justify-content: center;\n    }\n\n    .weather-card .location-label {\n        /* Nuevo estilo para la ubicación */\n        font-size: 1.1em;\n        font-weight: 500;\n        margin-bottom: 10px;\n        opacity: 0.9;\n    }\n\n    .weather-card .weather-main-info {\n        /* Contenedor principal de icono y temperatura */\n        display: flex;\n        align-items: center;\n        margin-bottom: 10px;\n    }\n\n    .weather-icon img {\n        width: 90px;\n        /* Icono más grande */\n        filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.3));\n        /* Sombra para resaltar */\n        animation: float 3s ease-in-out infinite;\n        /* Animación flotante */\n        margin-right: 15px;\n        /* Espacio entre icono y temp */\n    }\n\n    @keyframes float {\n        0% {\n            transform: translateY(0px);\n        }\n\n        50% {\n            transform: translateY(-5px);\n        }\n\n        100% {\n            transform: translateY(0px);\n        }\n    }\n\n    .weather-card .temp-display {\n        /* Estilo para la temperatura principal */\n        font-size: 3em;\n        /* Temperatura muy grande */\n        font-weight: 700;\n        line-height: 1;\n        /* Ajustar altura de línea */\n    }\n\n    .weather-card .description {\n        font-size: 1.3em;\n        /* Un poco más grande */\n        font-weight: 600;\n        margin-bottom: 10px;\n        text-transform: capitalize;\n        /* Capitalizar la primera letra */\n    }\n\n    .weather-card .stats {\n        font-size: 1em;\n        /* Más legible */\n        color: rgba(255, 255, 255, 0.8);\n        /* Blanco semitransparente */\n        display: flex;\n        gap: 15px;\n        /* Espaciado entre temperatura y humedad */\n        align-items: center;\n        justify-content: center;\n    }\n\n    .weather-card .stats i {\n        margin-right: 5px;\n    }\n\n\n    .status-indicator {\n        width: 12px;\n        height: 12px;\n        border-radius: 50%;\n        display: inline-block;\n        margin-right: 8px;\n        background-color: var(--text-secondary);\n        transition: background-color 0.3s ease;\n    }\n\n    .status-indicator.active {\n        background-color: var(--accent-green);\n    }\n\n    .status-indicator.active.lights {\n        background-color: var(--accent-yellow);\n    }\n\n    .status-indicator.pulse {\n        animation: pulse-animation 1.5s infinite;\n    }\n\n    @keyframes pulse-animation {\n        0% {\n            box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7);\n        }\n\n        70% {\n            box-shadow: 0 0 0 10px rgba(39, 174, 96, 0);\n        }\n\n        100% {\n            box-shadow: 0 0 0 0 rgba(39, 174, 96, 0);\n        }\n    }\n\n    .status-indicator.pulse.lights {\n        animation-name: pulse-lights-animation;\n    }\n\n    @keyframes pulse-lights-animation {\n        0% {\n            box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.7);\n        }\n\n        70% {\n            box-shadow: 0 0 0 10px rgba(243, 156, 18, 0);\n        }\n\n        100% {\n            box-shadow: 0 0 0 0 rgba(243, 156, 18, 0);\n        }\n    }\n\n    .grid-item.alert-active {\n        border: 2px solid var(--accent-red);\n        animation: pulse-border-animation 1.5s infinite ease-in-out;\n    }\n\n    @keyframes pulse-border-animation {\n        0% {\n            border-color: var(--accent-red);\n        }\n\n        50% {\n            border-color: var(--bg-card);\n        }\n\n        100% {\n            border-color: var(--accent-red);\n        }\n    }\n\n    .config-row {\n        display: flex;\n        flex-direction: column;\n        align-items: stretch;\n        margin-bottom: 15px;\n    }\n\n    .config-row label {\n        text-align: left;\n        margin-bottom: 5px;\n        font-size: 0.9em;\n    }\n\n    .form-range::-webkit-slider-thumb {\n        background-color: var(--accent-green);\n    }\n\n    .form-range::-moz-range-thumb {\n        background-color: var(--accent-green);\n    }\n\n    .tank-body {\n        width: 100px;\n        height: 100px;\n        border: 4px solid var(--border-color);\n        border-radius: 10px;\n        position: relative;\n        overflow: hidden;\n        background-color: #e9ecef;\n        align-self: center;\n    }\n\n    .water-level {\n        position: absolute;\n        bottom: 0;\n        left: 0;\n        width: 100%;\n        transition: height 0.7s cubic-bezier(0.65, 0, 0.35, 1);\n    }\n\n    .water-level.water {\n        background-color: var(--accent-blue);\n    }\n\n    .water-level.soil {\n        background-color: var(--soil-color);\n    }\n\n    .water-level.nutrient {\n        background: var(--nutrient-color);\n    }\n\n    .water-level.health {\n        background: var(--health-color);\n    }\n\n    /* Nuevo estilo para la salud de la planta */\n\n    .water-level::after {\n        content: '';\n        position: absolute;\n        top: -5px;\n        left: -100px;\n        width: 250px;\n        height: 15px;\n        background-image: url('data:image/svg+xml;utf8,<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" viewBox=\\\"0 0 800 80\\\"><path d=\\\"M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v23h800v-23z\\\" fill=\\\"rgba(255,255,255,0.3)\\\"/></svg>');\n        background-size: contain;\n        background-repeat: repeat-x;\n        animation: wave-animation 3s linear infinite;\n    }\n\n    @keyframes wave-animation {\n        from {\n            transform: translateX(0);\n        }\n\n        to {\n            transform: translateX(150px);\n        }\n    }\n\n    .tank-percentage {\n        position: absolute;\n        top: 50%;\n        left: 50%;\n        transform: translate(-50%, -50%);\n        font-size: 1.8em;\n        color: white;\n        font-weight: 700;\n        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);\n    }\n\n    .event-log-container {\n        justify-content: flex-start;\n    }\n\n    .log-entries {\n        flex-grow: 1;\n        overflow-y: auto;\n        font-size: 0.9em;\n        text-align: left;\n    }\n\n    .log-entry {\n        display: flex;\n        padding: 5px 2px;\n        border-bottom: 1px solid var(--border-color);\n    }\n\n    .log-time {\n        color: var(--text-secondary);\n        margin-right: 15px;\n    }\n\n    .log-message {\n        color: var(--text-primary);\n        flex-grow: 1;\n    }\n\n    .config-container .title {\n        font-size: 1.1em;\n        font-weight: 700;\n        color: var(--text-primary);\n        text-align: left;\n        border-bottom: 1px solid var(--border-color);\n        padding-bottom: 10px;\n        margin-bottom: 15px;\n    }\n\n    .config-grid {\n        display: grid;\n        grid-template-columns: 1fr 1fr;\n        gap: 30px;\n    }\n\n    .config-column h3 {\n        font-size: 1em;\n        font-weight: 600;\n        color: var(--text-primary);\n        margin-bottom: 15px;\n        display: flex;\n        align-items: center;\n    }\n\n    .config-column h3 .fa {\n        margin-right: 8px;\n        color: var(--text-secondary);\n    }\n\n    .three-state-toggle {\n        display: flex;\n        background-color: #e9ecef;\n        border-radius: 8px;\n        padding: 4px;\n    }\n\n    .toggle-option {\n        flex: 1;\n        text-align: center;\n        padding: 5px;\n        border-radius: 6px;\n        font-size: 0.9em;\n        font-weight: 500;\n        color: var(--text-secondary);\n        cursor: pointer;\n        transition: all 0.2s ease-in-out;\n    }\n\n    .toggle-option.active {\n        background-color: var(--accent-green);\n        color: white;\n        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n    }\n\n    .btn-info {\n        --bs-btn-color: #fff;\n        --bs-btn-bg: var(--accent-blue);\n        --bs-btn-border-color: var(--accent-blue);\n    }\n\n    .btn-danger {\n        --bs-btn-color: #fff;\n        --bs-btn-bg: var(--accent-red);\n        --bs-btn-border-color: var(--accent-red);\n    }\n\n    .error-overlay {\n        position: absolute;\n        top: 0;\n        left: 0;\n        width: 100%;\n        height: 100%;\n        background-color: rgba(255, 56, 96, 0.15);\n        backdrop-filter: blur(2px);\n        -webkit-backdrop-filter: blur(2px);\n        color: var(--accent-red);\n        display: flex;\n        flex-direction: column;\n        align-items: center;\n        justify-content: center;\n        border-radius: 8px;\n        z-index: 10;\n        font-weight: bold;\n        text-align: center;\n    }\n\n    .error-overlay .fa {\n        font-size: 2em;\n        margin-bottom: 10px;\n    }\n</style>\n\n<script>\n    (function(scope) {\n    let myChart;\n    let isInitialized = false;\n    let isTankAlertShown = false;\n    let isSoilMoistureAlertShown = false;\n    let isNutrientsLowAlertShown = false;\n    let isPlantHealthLowAlertShown = false;\n\n    const alertQueue = [];\n    let processingAlerts = false;\n\n    async function processAlertQueue() {\n        if (processingAlerts || alertQueue.length === 0) {\n            return;\n        }\n        processingAlerts = true;\n        const alertFn = alertQueue.shift();\n        try {\n            await alertFn();\n        } catch (error) {\n            console.error('Error al mostrar SweetAlert:', error);\n        } finally {\n            processingAlerts = false;\n            if (alertQueue.length > 0) {\n                processAlertQueue();\n            }\n        }\n    }\n\n    function init(scope) {\n        const chartDom = document.getElementById('chart-container');\n        if (chartDom) { myChart = echarts.init(chartDom); }\n\n        const configCard = document.getElementById('config-card');\n        if (configCard && !configCard.innerHTML) {\n            configCard.innerHTML = `\n            <div class=\"config-container\">\n                <div class=\"title\">Panel de Control</div>\n                <div class=\"config-grid\">\n                    <div class=\"config-column\">\n                        <h3><i class=\"fa fa-tint\"></i> Control de Riego</h3>\n                        <div class=\"config-row\">\n                            <label for=\"umbral-riego-slider\">Umbral de Humedad: <span id=\"umbral-riego-value\">35</span>%</label>\n                            <input type=\"range\" class=\"form-range\" min=\"10\" max=\"60\" value=\"35\" id=\"umbral-riego-slider\">\n                        </div>\n                        <div class=\"config-row\">\n                             <label>Modo de Bomba:</label>\n                             <div class=\"three-state-toggle\" id=\"pump-override-group\">\n                                 <span class=\"toggle-option\" data-mode=\"on\">ON</span>\n                                 <span class=\"toggle-option\" data-mode=\"off\">OFF</span>\n                                 <span class=\"toggle-option active\" data-mode=\"auto\">AUTO</span>\n                             </div>\n                        </div>\n                    </div>\n                    <div class=\"config-column\">\n                        <h3><i class=\"fa fa-lightbulb-o\"></i> Control de Luces</h3>\n                        <div class=\"config-row\">\n                            <label for=\"lights-intensity-slider\">Intensidad de Luz: <span id=\"lights-intensity-value\">100</span>%</label>\n                            <input type=\"range\" class=\"form-range\" min=\"0\" max=\"100\" value=\"100\" id=\"lights-intensity-slider\">\n                        </div>\n                        <div class=\"config-row\">\n                            <label>Modo de Luces:</label>\n                             <div class=\"three-state-toggle\" id=\"lights-override-group\">\n                                 <span class=\"toggle-option\" data-mode=\"on\">ON</span>\n                                 <span class=\"toggle-option\" data-mode=\"off\">OFF</span>\n                                 <span class=\"toggle-option active\" data-mode=\"auto\">AUTO</span>\n                             </div>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"d-flex justify-content-between mt-4\">\n                    <button class=\"btn btn-info w-50 me-2\" id=\"abonar-btn\"><i class=\"fa fa-pagelines\"></i> Abonar Tierra</button>\n                    <button class=\"btn btn-danger w-50\" id=\"error-sim-btn\"><i class=\"fa fa-exclamation-triangle\"></i> Simular Fallo</button>\n                </div>\n            </div>`;\n        }\n\n        const umbralSlider = document.getElementById('umbral-riego-slider');\n        const umbralValue = document.getElementById('umbral-riego-value');\n        if(umbralSlider) {\n            umbralSlider.addEventListener('input', function() { umbralValue.textContent = this.value; });\n            umbralSlider.addEventListener('change', function() {\n                setTimeout(() => { toastr.info(`Umbral de riego ajustado a ${this.value}%.`); }, 50);\n                scope.send({ topic: 'umbral_riego', payload: this.value });\n            });\n        }\n\n        const intensitySlider = document.getElementById('lights-intensity-slider');\n        const intensityValue = document.getElementById('lights-intensity-value');\n        if(intensitySlider) {\n            intensitySlider.addEventListener('input', function() { intensityValue.textContent = this.value; });\n            intensitySlider.addEventListener('change', function() {\n                setTimeout(() => { toastr.info(`Intensidad de luces ajustada a ${this.value}%.`); }, 50);\n                scope.send({ topic: 'lights_intensity', payload: this.value });\n            });\n        }\n\n        const pumpBtnGroup = document.getElementById('pump-override-group');\n        if (pumpBtnGroup) {\n            pumpBtnGroup.addEventListener('click', function(e) { if (e.target.classList.contains('toggle-option')) { const mode = e.target.getAttribute('data-mode');\n                setTimeout(() => { toastr.success(`Modo de bomba cambiado a: ${mode.toUpperCase()}.`); }, 50);\n                scope.send({ topic: 'pump_override', payload: mode }); }\n            });\n        }\n        \n        const lightsBtnGroup = document.getElementById('lights-override-group');\n        if (lightsBtnGroup) {\n            lightsBtnGroup.addEventListener('click', function(e) { if (e.target.classList.contains('toggle-option')) { const mode = e.target.getAttribute('data-mode');\n                setTimeout(() => { toastr.success(`Modo de luces cambiado a: ${mode.toUpperCase()}.`); }, 50);\n                scope.send({ topic: 'lights_override', payload: e.target.getAttribute('data-mode') }); }\n            });\n        }\n\n        const abonarBtn = document.getElementById('abonar-btn');\n        if(abonarBtn){ abonarBtn.addEventListener('click', function() {\n            setTimeout(() => { toastr.success('Niveles de nutrientes restablecidos.', '¡Abonado!'); }, 50);\n            scope.send({topic: 'abonar_tierra', payload: true}); });\n        }\n        \n        const errorSimBtn = document.getElementById('error-sim-btn');\n        if(errorSimBtn) { errorSimBtn.addEventListener('click', function() {\n            setTimeout(() => { toastr.warning('Estado del sensor de humedad alternado.', 'Simulación de Fallo'); }, 50);\n            scope.send({topic: 'simular_fallo', payload: true}); });\n        }\n\n        const timeDiv = document.getElementById('current-time');\n        function updateTime() { if(timeDiv) timeDiv.innerText = new Date().toLocaleTimeString('es-EC', {hour: '2-digit', minute:'2-digit', second: '2-digit'}); }\n        updateTime(); setInterval(updateTime, 1000);\n\n        isInitialized = true;\n    }\n    \n    function updateTankIndicator(cardId, title, value, alertStatus, type, sensorStatus) {\n        const parentCard = document.getElementById(cardId);\n        if (!parentCard) return;\n\n        const errorOverlayId = cardId + '-error-overlay';\n        let errorOverlay = document.getElementById(errorOverlayId);\n        if (sensorStatus === 'error') {\n            if (!errorOverlay) {\n                const overlay = document.createElement('div');\n                overlay.className = 'error-overlay';\n                overlay.id = errorOverlayId;\n                overlay.innerHTML = `<i class=\"fa fa-exclamation-triangle\"></i><span>SIN SEÑAL</span>`;\n                parentCard.appendChild(overlay);\n            }\n        } else {\n            if (errorOverlay) {\n                errorOverlay.remove();\n            }\n        }\n        \n        if (typeof value !== 'number') value = 0;\n        const elemId = cardId + '-container';\n        let container = document.getElementById(elemId);\n        if (!container) {\n            parentCard.innerHTML = `<div class=\"tank-indicator\" id=\"${elemId}\"><div class=\"title\">${title}</div><div class=\"tank-body\"><div class=\"water-level\" id=\"${elemId}-level\"></div><div class=\"tank-percentage\" id=\"${elemId}-text\"></div></div></div>`;\n            container = document.getElementById(elemId);\n        }\n        \n        const waterLevel = document.getElementById(`${elemId}-level`);\n        const text = document.getElementById(`${elemId}-text`);\n        if (waterLevel) { waterLevel.className = 'water-level'; if(type) { waterLevel.classList.add(type); } waterLevel.style.height = value + '%'; }\n        if (text) text.innerText = Math.round(value) + '%';\n        parentCard.classList.toggle('alert-active', alertStatus);\n    }\n    \n    function updateInfoCard(elemId, label, val, color, icon, isActive, intensity) { let container = document.getElementById(elemId); if (!container) return; if (!container.innerHTML) { container.innerHTML = `<div class=\\\"label\\\">${label}</div><div class=\\\"value\\\"></div>`;} const valueDiv = container.querySelector('.value'); const typeClass = (icon === 'fa-lightbulb-o') ? 'lights' : ''; let indicatorClasses = `status-indicator ${typeClass} ${isActive ? 'active pulse' : ''}`; let intensityText = ''; if (icon === 'fa-lightbulb-o' && isActive) { intensityText = ` (${intensity}%)`; if (intensity < 100 && intensity > 0) { indicatorClasses = `status-indicator ${typeClass} active`; } } valueDiv.style.color = color; valueDiv.innerHTML = `<span class=\\\"${indicatorClasses}\\\"></span> ${val}${intensityText}`; }\n    function updateWeatherCard(elemId, data) {\n        const container = document.getElementById(elemId);\n        if (!container || !data || !data.iconUrl) return;\n\n        // Limpiar el contenido anterior si ya existe\n        if (!container.innerHTML) {\n            container.innerHTML = `\n                <div class=\"weather-main-info\">\n                    <div class=\"weather-icon\"></div>\n                    <div class=\"temp-display\"></div>\n                </div>\n                <div class=\"description\"></div>\n                <div class=\"stats\"></div>\n                <div class=\"location-label\"></div>\n            `;\n        }\n\n        const iconDiv = container.querySelector('.weather-icon');\n        const tempDisplay = container.querySelector('.temp-display');\n        const descriptionDiv = container.querySelector('.description');\n        const statsDiv = container.querySelector('.stats');\n        const locationLabel = container.querySelector('.location-label');\n\n        if (iconDiv) iconDiv.innerHTML = `<img src=\"${data.iconUrl}\" alt=\"${data.description} icon\"/>`;\n        if (tempDisplay) tempDisplay.innerText = data.temp;\n        if (descriptionDiv) descriptionDiv.innerText = data.description;\n        if (statsDiv) statsDiv.innerHTML = `<i class=\"fa fa-tint\"></i> ${data.humidity}`; // Solo humedad, temperatura ya arriba\n        if (locationLabel) locationLabel.innerText = data.label; // Mostrar 'Clima Exterior en [Ciudad]' aquí\n    }\n    function updateEventLog(cardId, logArray) { const parentCard = document.getElementById(cardId); if (!parentCard) return; if (!parentCard.innerHTML) { parentCard.innerHTML = ` <div class=\\\"event-log-container\\\"> <div class=\\\"title\\\">Registro de Eventos</div> <div class=\\\"log-entries\\\" id=\\\"log-entries-list\\\"></div> </div> `; } const logList = document.getElementById('log-entries-list'); if (logList) { let html = ''; (logArray || []).forEach(entry => { html += `<div class=\\\"log-entry\\\"><span class=\\\"log-time\\\">${entry.time}</span><span class=\\\"log-message\\\">${entry.message}</span></div>`; }); logList.innerHTML = html; } }\n    function updateChart(chartInstance, data) { if (!chartInstance || !data || !data.seriesData) return; chartInstance.setOption({ backgroundColor: 'transparent', tooltip: { trigger: 'axis', textStyle: { color: '#2c3e50' } }, legend: { data: ['Temperatura', 'Humedad'], textStyle: { color: 'var(--text-secondary)' } }, toolbox: { show: true, right: 20, feature: { dataZoom: { yAxisIndex: 'none', title: { zoom: 'Zoom', back: 'Restaurar' }}, magicType: { type: ['line', 'bar'], title: { line: 'Línea', bar: 'Barra' }}, saveAsImage: { name: 'grafica_huerto', title: 'Guardar' } }, iconStyle: { borderColor: 'var(--text-secondary)' } }, dataZoom: [ { type: 'inside', start: 0, end: 100 }, { show: true, type: 'slider', start: 50, end: 100, bottom: '2%', height: 25, handleIcon: 'M10.7,11.9v-1.3h1.3c16,0,30.2,5.3,41.6,14.4T117,33.7l-6.8,0.3-6.3,2.1h-13V43h13l6.7,1.9,9,1c100.3,21.5,201.9,42.9,295.8,64.2l5-2.4l-0.4-2.1h-13v-12h12.1l3.1,0.7l-1.4-2.3C893,46,791.1,24.2,686,1.9c-6.6-1.3-13.2-2.2-19.7-2.9h-1.3v-1.3H10.7z', handleSize: '80%', handleStyle: { color: '#fff', shadowBlur: 3, shadowColor: 'rgba(0, 0, 0, 0.4)', shadowOffsetX: 2, shadowOffsetY: 2 }, fillerColor: 'rgba(41, 128, 185, 0.2)', borderColor: 'var(--border-color)', textStyle: { color: 'var(--text-secondary)' } } ], grid: { left: '3%', right: '4%', bottom: '15%', top: '15%', containLabel: true }, xAxis: { type: 'category', boundaryGap: false, data: data.xAxisData, axisLine: { lineStyle: { color: 'var(--border-color)' } }, axisLabel: { color: 'var(--text-secondary)' } }, yAxis: [ { type: 'value', name: 'Temp', position: 'left', axisLabel: { formatter: '{value} °C', color: 'var(--text-secondary)' }, axisLine: { show: true, lineStyle: { color: 'var(--accent-blue)' } }, splitLine: { lineStyle: { color: 'var(--border-color)' } } }, { type: 'value', name: 'Hum', position: 'right', axisLabel: { formatter: '{value} %', color: 'var(--text-secondary)' }, axisLine: { show: true, lineStyle: { color: 'var(--accent-green)' } }, splitLine: { show: false } } ], series: [ { name: 'Temperatura', type: 'line', smooth: 0.6, showSymbol: false, data: data.seriesData.temperatura, yAxisIndex: 0, lineStyle: { color: 'var(--accent-blue)', width: 2 }, areaStyle: { color: 'rgba(41, 128, 185, 0.2)' } }, { name: 'Humedad', type: 'line', smooth: 0.6, showSymbol: false, data: data.seriesData.humedad, yAxisIndex: 1, lineStyle: { color: 'var(--accent-green)', width: 2 }, areaStyle: { color: 'rgba(39, 174, 96, 0.2)' } } ] }, true); }\n    \n    scope.$watch('msg', function(msg) {\n        console.log(\"DEBUG: Mensaje recibido en UI. Payload:\", msg ? msg.payload : 'null');\n        \n        if (!msg || !msg.payload) { \n            console.log(\"DEBUG: Mensaje filtrado (payload nulo).\");\n            return; \n        }\n\n        if (!msg.payload.invernadero && !msg.payload.config) {\n            console.log(\"DEBUG: Mensaje filtrado (sin invernadero ni config).\");\n            return;\n        }\n\n        if (!isInitialized) { init(scope); }\n        const data = msg.payload;\n\n        console.log(\"--- DEBUG DASHBOARD UI (Msg Recibido y Validado) ---\");\n        console.log(\"Salud de la Planta (recibida en UI):\", data.invernadero ? data.invernadero.plantHealth : 'invernadero undefined');\n        console.log(\"Estado de PumpOverride recibido:\", data.config ? data.config.pumpOverride : 'config undefined');\n        console.log(\"Estado de LightsOverride recibido:\", data.config ? data.config.lightsOverride : 'config undefined');\n        console.log(\"---------------------------------------\");\n\n        if (data.invernadero) {\n            if (data.invernadero.tankAlert && !isTankAlertShown) {\n                console.log('Alerta: Nivel del tanque bajo', data.invernadero.nivelTanque);\n                alertQueue.push(() => Swal.fire({\n                    icon: 'warning',\n                    title: 'Nivel Crítico',\n                    text: `El nivel del tanque de agua (${data.invernadero.nivelTanque}%) es inferior al 20%. ¡Rellenar pronto!`,\n                    confirmButtonText: 'Entendido',\n                    confirmButtonColor: 'var(--accent-green)'\n                }));\n                isTankAlertShown = true;\n            } else if (!data.invernadero.tankAlert) {\n                isTankAlertShown = false;\n            }\n\n            if (data.invernadero.soilMoistureAlert && !isSoilMoistureAlertShown) {\n                console.log('Alerta: Humedad del suelo baja', data.invernadero.humedadSuelo, 'Umbral:', data.config.umbralRiego);\n                alertQueue.push(() => Swal.fire({\n                    icon: 'info',\n                    title: 'Humedad del Suelo Baja',\n                    text: `La humedad del suelo (${data.invernadero.humedadSuelo}%) está por debajo del umbral de riego (${data.config.umbralRiego}%).`,\n                    confirmButtonText: 'OK',\n                    confirmButtonColor: 'var(--accent-blue)'\n                }));\n                isSoilMoistureAlertShown = true;\n            } else if (!data.invernadero.soilMoistureAlert) {\n                isSoilMoistureAlertShown = false;\n            }\n\n            if (data.invernadero.nutrientsLowAlert && !isNutrientsLowAlertShown) {\n                console.log('Alerta: Nutrientes del suelo bajos', data.invernadero.nutrientesSuelo);\n                alertQueue.push(() => Swal.fire({\n                    icon: 'warning',\n                    title: 'Nutrientes del Suelo Bajos',\n                    text: `El nivel de nutrientes del suelo (${data.invernadero.nutrientesSuelo}%) es bajo. Considere abonar la tierra.`,\n                    confirmButtonText: 'Entendido',\n                    confirmButtonColor: 'var(--accent-yellow)'\n                }));\n                isNutrientsLowAlertShown = true;\n            } else if (!data.invernadero.nutrientsLowAlert) {\n                isNutrientsLowAlertShown = false;\n            }\n            \n            if (data.invernadero.plantHealth < 30 && !isPlantHealthLowAlertShown) {\n                console.log('Alerta: Salud de la planta baja', data.invernadero.plantHealth);\n                alertQueue.push(() => Swal.fire({\n                    icon: 'error',\n                    title: '¡Salud de la Planta Crítica!',\n                    text: `La salud de la planta es baja (${data.invernadero.plantHealth}%). Revise los parámetros del invernadero.`,\n                    confirmButtonText: 'Atendido',\n                    confirmButtonColor: 'var(--accent-red)'\n                }));\n                isPlantHealthLowAlertShown = true;\n            } else if (data.invernadero.plantHealth >= 30) {\n                isPlantHealthLowAlertShown = false;\n            }\n        }\n\n        if (alertQueue.length > 0 && !processingAlerts) {\n            processAlertQueue();\n        }\n\n        if (data.config) {\n            console.log('DEBUG: Updating pump/lights buttons with config:', data.config.pumpOverride, data.config.lightsOverride);\n\n            const umbralSlider = document.getElementById('umbral-riego-slider');\n            const umbralValue = document.getElementById('umbral-riego-value');\n            if(umbralSlider && document.activeElement !== umbralSlider) { umbralSlider.value = data.config.umbralRiego; }\n            if(umbralValue) { umbralValue.textContent = data.config.umbralRiego; }\n            const intensitySlider = document.getElementById('lights-intensity-slider');\n            const intensityValue = document.getElementById('lights-intensity-value');\n            if(intensitySlider && document.activeElement !== intensitySlider) { intensitySlider.value = data.config.lightsIntensity; }\n            if(intensityValue) { intensityValue.textContent = data.config.lightsIntensity; }\n\n            document.querySelectorAll('#pump-override-group .toggle-option').forEach(btn => {\n                btn.classList.remove('active');\n                if (btn.getAttribute('data-mode') === data.config.pumpOverride) {\n                    btn.classList.add('active');\n                    console.log('DEBUG: Pump button activated:', btn.getAttribute('data-mode'));\n                }\n            });\n            \n            document.querySelectorAll('#lights-override-group .toggle-option').forEach(btn => {\n                btn.classList.remove('active');\n                if (btn.getAttribute('data-mode') === data.config.lightsOverride) {\n                    btn.classList.add('active');\n                    console.log('DEBUG: Lights button activated:', btn.getAttribute('data-mode'));\n                }\n            });\n        }\n\n        if(data.invernadero) {\n            if(myChart) {\n                updateChart(myChart, data.invernadero.chartData);\n                myChart.resize();\n            }\n            updateTankIndicator('soil-gauge-card', 'Humedad del Suelo', data.invernadero.humedadSuelo, data.invernadero.soilMoistureAlert, 'soil', data.invernadero.humedadSueloStatus);\n            updateTankIndicator('tank-gauge-card', 'Nivel Tanque de Agua', data.invernadero.nivelTanque, data.invernadero.tankAlert, 'water', 'ok');\n            updateTankIndicator('soil-nutrient-card', 'Nutrientes en Tierra', data.invernadero.nutrientesSuelo, data.invernadero.nutrientsLowAlert, 'nutrient', 'ok');\n            updateTankIndicator('plant-health-card', 'Salud de la Planta', data.invernadero.plantHealth, data.invernadero.plantHealth < 30, 'health', 'ok');\n        }\n        \n        if(data.sistema) {\n            updateInfoCard('pump-card', 'Bomba de Riego', data.sistema.bombaActiva ? 'REGANDO' : 'EN ESPERA', data.sistema.bombaActiva ? 'var(--accent-green)' : 'var(--text-secondary)', 'fa-tint', data.sistema.bombaActiva, 100 );\n            updateInfoCard('lights-card', 'Luces de Crecimiento', data.sistema.lucesActivas ? 'ENCENDIDAS' : 'APAGADAS', data.sistema.lucesActivas ? 'var(--accent-yellow)' : 'var(--text-secondary)', 'fa-lightbulb-o', data.sistema.lucesActivas, data.config.lightsIntensity );\n        }\n        if(data.climaReal) {\n            updateWeatherCard('weather-card', data.climaReal);\n        }\n        if (data.log) {\n            updateEventLog('event-log-card', data.log);\n        }\n    });\n})(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1110,
+        "y": 180,
+        "wires": [
+            [
+                "c52ce99c2e332e82"
+            ]
+        ]
+    },
+    {
+        "id": "b1c2d3e4f5a6b7c8",
+        "type": "change",
+        "z": "fdf5fd7b005114ac",
+        "name": "Abonar Tierra",
+        "rules": [
+            {
+                "t": "set",
+                "p": "soil_nutrient_level",
+                "pt": "flow",
+                "to": "100",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Se ha abonado la tierra.",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1060,
+        "y": 540,
+        "wires": [
+            [
+                "25d2ed934e93fbf9"
+            ]
+        ]
+    },
+    {
+        "id": "c1d2e3f4a5b6c7d9",
+        "type": "function",
+        "z": "fdf5fd7b005114ac",
+        "name": "Alternar Fallo de Sensor",
+        "func": "let currentStatus = flow.get('soil_sensor_status') || 'ok';\n\nif (currentStatus === 'ok') {\n    flow.set('soil_sensor_status', 'error');\n    msg.payload = \"Fallo simulado en sensor de humedad.\";\n} else {\n    flow.set('soil_sensor_status', 'ok');\n    msg.payload = \"Sensor de humedad recuperado.\";\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "52857e492215c2bb",
+        "type": "ui_group",
+        "name": "Dashboard",
+        "tab": "2d8f967dfc87f2ff",
+        "order": 1,
+        "disp": false,
+        "width": "24",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "2d8f967dfc87f2ff",
+        "type": "ui_tab",
+        "name": "Huerto (Single Page)",
+        "icon": "desktop",
+        "disabled": false,
+        "hidden": false
+    }
+]
